@@ -48,6 +48,16 @@ export default async function ByraaOversikt() {
     : { data: null };
   const leads = leadsRes.data ?? [];
 
+  // Check if tenant has any categories configured — without them they'll
+  // never match incoming leads from innovena.no.
+  const { data: tenantCats } = tenantId
+    ? await supabase
+        .from("tenant_categories")
+        .select("category_id")
+        .eq("tenant_id", tenantId)
+    : { data: [] };
+  const hasCategories = (tenantCats ?? []).length > 0;
+
   return (
     <div className="space-y-6">
       <div>
@@ -62,6 +72,27 @@ export default async function ByraaOversikt() {
               : "Oversikt over leads, tilbud og omsetning."}
         </p>
       </div>
+
+      {!hasCategories && !pendingApproval ? (
+        <Card className="border-[#ff7849]/50 bg-[#ff7849]/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              ⚠️ Du får ingen leads før kategorier er valgt
+            </CardTitle>
+            <CardDescription>
+              Vi matcher leads mot byråer som har valgt de tjenestekategoriene
+              leadet gjelder. Velg kategoriene dere tilbyr — det tar 30 sekunder.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="brand" size="sm">
+              <Link href="/byraa/innstillinger#kategorier">
+                Velg kategorier nå
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
 
       {pendingApproval ? (
         <Card className="border-yellow-500/50 bg-yellow-500/5">

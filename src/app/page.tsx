@@ -683,32 +683,33 @@ export default async function PlatformLanding() {
         </section>
 
         {/* =======================================================
-            FOUNDER QUOTE
+            FROM THE TEAM
         ======================================================== */}
         <section className="bg-[#14100e] px-6 py-28 text-[#f6f1ea]">
           <div className="mx-auto w-full max-w-4xl">
             <div className="rounded-xl bg-[#1b1613] p-10 ring-1 ring-[#ff7849]/15 md:p-14">
               <div className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ff9975]">
-                Fra grunnleggeren
+                Fra teamet bak
               </div>
               <blockquote className="text-xl leading-relaxed text-white md:text-2xl">
                 <span className="text-[#ff9975]">&ldquo;</span>
-                Som byrå ville jeg ha leads uten å drive markedsføring hele
-                tiden — og CRM-verktøyene vi faktisk bruker hver dag. Så bygde
-                jeg plattformen jeg selv trengte. CRM-et er gratis fordi det er
-                riktig — vi tjener når dere vinner deals, ikke før.
+                Vi har alle bakgrunn fra byrå- og tech-verdenen. Vi ville ha
+                leads uten å drive markedsføring hele tiden — og CRM-verktøy
+                som faktisk ble brukt hver dag. Så bygde vi plattformen vi
+                selv trengte. CRM-et er gratis fordi det er riktig — vi tjener
+                når dere vinner deals, ikke før.
                 <span className="text-[#ff9975]">&rdquo;</span>
               </blockquote>
               <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#ff7849]/15 text-sm font-semibold text-[#ff9975]">
-                  JF
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f] text-xs font-bold text-white">
+                  IN
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-white">
-                    Joakim Flatmoen
+                    Teamet bak Innovena
                   </div>
                   <div className="text-xs text-white/50">
-                    Grunnlegger, Innovena
+                    Bygget av folk fra byrå- og tech-verdenen
                   </div>
                 </div>
               </div>
