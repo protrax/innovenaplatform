@@ -1,0 +1,25 @@
+-- Seed service categories from Joakim's list
+insert into public.service_categories (slug, name, sort_order) values
+  ('nettsider', 'Nettsider', 10),
+  ('seo', 'SEO', 20),
+  ('aeo', 'AEO', 30),
+  ('nettbutikk', 'Nettbutikk', 40),
+  ('markedsforing', 'Markedsføring', 50),
+  ('ai-losninger', 'AI-løsninger', 60),
+  ('webutvikling', 'Webutvikling', 70),
+  ('design', 'Design', 80),
+  ('crm-systemer', 'CRM-systemer', 90),
+  ('regnskap', 'Regnskap', 100),
+  ('hosting', 'Hosting', 110),
+  ('app-utvikling', 'App-utvikling', 120),
+  ('teknisk-radgivning', 'Teknisk rådgivning', 130),
+  ('it-konsulenter', 'IT-konsulenter', 140),
+  ('influencer-markedsforing', 'Influencer markedsføring', 150),
+  ('video-produksjon', 'Video produksjon', 160),
+  ('fotograf', 'Fotograf', 170),
+  ('innholdsmarkedsforing', 'Innholdsmarkedsføring', 180),
+  ('pr-byraa', 'PR-byrå', 190),
+  ('anbud', 'Anbud', 200),
+  ('ai-radgivning', 'AI-rådgivning', 210),
+  ('ai-kurs', 'AI-kurs', 220)
+on conflict (slug) do nothing;
