@@ -46,7 +46,7 @@ export const PHASES: PhaseDef[] = [
     id: "levering",
     label: "Levering",
     description: "Launch, handover, opplæring",
-    color: "#ff7849",
+    color: "#dfff00",
   },
   {
     id: "fullfort",

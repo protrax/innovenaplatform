@@ -385,19 +385,19 @@ export function tplProjectReceived(input: {
   const content = `
     <h1 style="margin:0 0 8px;font-size:20px;">Forespørselen din er registrert ✅</h1>
     <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
-      <em>${input.project_title}</em> er nå sendt til matchende byråer. De første tilbudene
-      kommer vanligvis innen noen timer til én dag.
+      <em>${input.project_title}</em> er nå sendt til matchende byråer og konsulenter.
+      De første tilbudene kommer vanligvis innen noen timer til én dag.
     </p>
     <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
-      Du får en e-post så snart et byrå sender et tilbud. Du kan følge med og sammenlikne
-      tilbud i dashbordet.
+      Du får en e-post så snart en leverandør sender et tilbud. Du kan følge med
+      og sammenlikne tilbud i dashbordet.
     </p>
     ${button("Se prosjektet", url)}
   `;
   return {
     subject: `Forespørselen er registrert: ${input.project_title}`,
     html: shell(content),
-    text: `Forespørselen din om ${input.project_title} er registrert og sendt til matchende byråer. Se: ${url}`,
+    text: `Forespørselen din om ${input.project_title} er registrert og sendt til matchende byråer og konsulenter. Se: ${url}`,
   };
 }
 

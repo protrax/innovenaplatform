@@ -34,15 +34,15 @@ export function AppShell({
     .join("");
 
   return (
-    <div className="flex min-h-screen flex-1 bg-[#fbf7f0]">
+    <div className="flex min-h-screen flex-1 bg-[#faf9f5]">
       {/* =====================================================
           SIDEBAR — warm dark with coral accents on active
       ====================================================== */}
-      <aside className="hidden w-60 shrink-0 flex-col bg-[#14100e] text-[#f6f1ea] md:flex">
+      <aside className="hidden w-60 shrink-0 flex-col bg-[#1a1c1a] text-[#f6f1ea] md:flex">
         {/* Logo */}
         <div className="flex h-16 items-center gap-2.5 px-5 text-sm font-semibold tracking-tight">
           <span
-            className="inline-block h-6 w-6 rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f] shadow-sm shadow-[#ff7849]/30"
+            className="inline-block h-6 w-6 rounded-md bg-gradient-to-br from-[#dfff00] to-[#576500] shadow-sm shadow-[#dfff00]/30"
             aria-hidden
           />
           Innovena
@@ -68,14 +68,14 @@ export function AppShell({
                 className={cn(
                   "group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                   active
-                    ? "bg-[#ff7849]/15 text-[#ffb094]"
+                    ? "bg-[#dfff00]/15 text-[#dfff00]"
                     : "text-white/65 hover:bg-white/5 hover:text-white",
                 )}
               >
                 <span
                   className={cn(
                     "shrink-0 transition-colors",
-                    active ? "text-[#ff9975]" : "text-white/50 group-hover:text-white",
+                    active ? "text-[#dfff00]" : "text-white/50 group-hover:text-white",
                   )}
                 >
                   {item.icon}
@@ -89,7 +89,7 @@ export function AppShell({
         {/* User chip */}
         <div className="border-t border-white/5 p-3">
           <div className="flex items-center gap-3 rounded-md px-2 py-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f] text-xs font-semibold text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#dfff00] to-[#576500] text-xs font-semibold text-[#1a1c1a]">
               {initials || "·"}
             </div>
             <div className="min-w-0 flex-1">
@@ -118,13 +118,13 @@ export function AppShell({
           content from pushing the whole page horizontally.
       ====================================================== */}
       <main className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#14100e]/8 bg-[#fbf7f0] px-6">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#1a1c1a]/8 bg-[#faf9f5] px-6">
           <div>
             {heading ? (
-              <h1 className="text-lg font-semibold text-[#14100e]">{heading}</h1>
+              <h1 className="text-lg font-semibold text-[#1a1c1a]">{heading}</h1>
             ) : null}
             {subheading && !heading ? (
-              <p className="text-xs text-[#64594f]">{subheading}</p>
+              <p className="text-xs text-[#6b6d68]">{subheading}</p>
             ) : null}
           </div>
           <div>{headerRight}</div>

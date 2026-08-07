@@ -2,56 +2,60 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── Editorial design system (matches innovena.no) ─────────────────────────
+   Off-white #FAF9F5 surface, deep slate #1A1C1A ink, lime #DFFF00 accent,
+   sharp corners (0px radius), Inter typography. Tokens kept in shadcn naming
+   so existing Card / Button / Input components pick them up automatically. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --background: #faf9f5;          /* off-white surface */
+  --foreground: #1a1c1a;          /* deep slate ink */
+  --card: #ffffff;                /* card sits one tier brighter than canvas */
+  --card-foreground: #1a1c1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1c1a;
+  --primary: #1a1c1a;             /* primary buttons = solid slate */
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f0;           /* tonal secondary surface */
+  --secondary-foreground: #1a1c1a;
+  --muted: #f4f4f0;
+  --muted-foreground: rgba(26, 28, 26, 0.6);
+  --accent: #dfff00;              /* lime accent — used sparingly */
+  --accent-foreground: #1a1c1a;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: rgba(26, 28, 26, 0.15);
+  --input: rgba(26, 28, 26, 0.2);
+  --ring: #1a1c1a;
+  --radius: 0;                    /* sharp editorial corners */
 
-  /* Brand — warm coral. Distinctive, Nordic, signals action without the
-     generic SaaS indigo/emerald. */
-  --brand: oklch(0.72 0.18 40); /* coral #ff7849 */
-  --brand-foreground: oklch(1 0 0);
+  /* Brand — Innovation Green (lime). Used only for primary CTAs and
+     critical highlights. */
+  --brand: #dfff00;
+  --brand-foreground: #1a1c1a;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --brand: oklch(0.76 0.16 40); /* coral brighter for dark mode */
-  --brand-foreground: oklch(0.145 0 0);
+  --background: #1a1c1a;
+  --foreground: #faf9f5;
+  --card: #2f312e;
+  --card-foreground: #faf9f5;
+  --popover: #2f312e;
+  --popover-foreground: #faf9f5;
+  --primary: #faf9f5;
+  --primary-foreground: #1a1c1a;
+  --secondary: #2f312e;
+  --secondary-foreground: #faf9f5;
+  --muted: #2f312e;
+  --muted-foreground: rgba(250, 249, 245, 0.6);
+  --accent: #dfff00;
+  --accent-foreground: #1a1c1a;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #1a1c1a;
+  --border: rgba(255, 255, 255, 0.15);
+  --input: rgba(255, 255, 255, 0.2);
+  --ring: #dfff00;
+  --brand: #dfff00;
+  --brand-foreground: #1a1c1a;
 }
 
 @theme inline {
@@ -94,6 +98,12 @@
     background: var(--background);
     color: var(--foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: #dfff00;
+    color: #1a1c1a;
   }
 
   /* Native <dialog> positioning + animations.

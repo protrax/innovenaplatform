@@ -44,7 +44,7 @@ export default async function InquirySuccess({
               Forespørselen er sendt! 🎉
             </CardTitle>
             <CardDescription>
-              Opptil 5 matchende byråer får forespørselen akkurat nå.
+              Opptil 5 matchende byråer og konsulenter får forespørselen akkurat nå.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">

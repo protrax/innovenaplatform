@@ -16,20 +16,20 @@ export default async function SignUpPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold tracking-tight text-[#14100e]">
+      <h1 className="text-3xl font-bold tracking-tight text-[#1a1c1a]">
         Opprett kontoen din
       </h1>
-      <p className="mt-2 text-sm text-[#64594f]">
+      <p className="mt-2 text-sm text-[#6b6d68]">
         Gratis for alltid. Ingen kortinfo, ingen bindingstid. Oppgrader når du
         vil ha leads levert automatisk.
       </p>
       <div className="mt-8 space-y-6">
         <SignUpForm initialRole={rolle} />
-        <p className="text-center text-sm text-[#64594f]">
+        <p className="text-center text-sm text-[#6b6d68]">
           Har du konto?{" "}
           <Link
             href="/logg-inn"
-            className="font-semibold text-[#c84a1f] underline-offset-4 hover:underline"
+            className="font-semibold text-[#576500] underline-offset-4 hover:underline"
           >
             Logg inn
           </Link>

@@ -45,9 +45,9 @@ export const metadata: Metadata = {
 };
 
 // Palette
-// Dark:  bg #14100e  surface #1b1613  surface2 #25201c  text #f6f1ea
-// Light: bg #fbf7f0  surface #f3ede1  ink #14100e  muted #64594f
-// Accent coral: base #ff7849 / bright #ffb094 / deep #c84a1f / tint-bg #2a1613
+// Dark:  bg #1a1c1a  surface #1a1c1a  surface2 #25201c  text #f6f1ea
+// Light: bg #faf9f5  surface #f4f4f0  ink #1a1c1a  muted #6b6d68
+// Accent coral: base #dfff00 / bright #dfff00 / deep #576500 / tint-bg #1a1c1a
 
 const TIERS = [
   {
@@ -150,44 +150,44 @@ export default async function PlatformLanding() {
   if (user) redirect(defaultRouteForUser(user));
 
   return (
-    <div className="relative min-h-screen bg-[#fbf7f0] text-[#14100e] selection:bg-[#ff7849] selection:text-white">
+    <div className="relative min-h-screen bg-[#faf9f5] text-[#1a1c1a] selection:bg-[#dfff00] selection:text-[#1a1c1a]">
       <div className="relative z-10">
         {/* =======================================================
             NAV (sits above hero — transparent top)
         ======================================================== */}
-        <header className="sticky top-0 z-40 border-b border-[#14100e]/5 bg-[#fbf7f0]/85 backdrop-blur-xl">
+        <header className="sticky top-0 z-40 border-b border-[#1a1c1a]/5 bg-[#faf9f5]/85 backdrop-blur-xl">
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
             <Link
               href="/"
-              className="flex items-center gap-2 text-base font-semibold tracking-tight text-[#14100e]"
+              className="flex items-center gap-2 text-base font-semibold tracking-tight text-[#1a1c1a]"
             >
               <Logo />
               Innovena
             </Link>
-            <nav className="hidden items-center gap-8 text-sm text-[#14100e]/70 md:flex">
-              <Link href="#plattform" className="hover:text-[#14100e]">
+            <nav className="hidden items-center gap-8 text-sm text-[#1a1c1a]/70 md:flex">
+              <Link href="#plattform" className="hover:text-[#1a1c1a]">
                 Plattform
               </Link>
-              <Link href="#for-deg" className="hover:text-[#14100e]">
+              <Link href="#for-deg" className="hover:text-[#1a1c1a]">
                 Byrå / Konsulent
               </Link>
-              <Link href="#pris" className="hover:text-[#14100e]">
+              <Link href="#pris" className="hover:text-[#1a1c1a]">
                 Pris
               </Link>
-              <Link href="#faq" className="hover:text-[#14100e]">
+              <Link href="#faq" className="hover:text-[#1a1c1a]">
                 FAQ
               </Link>
             </nav>
             <div className="flex items-center gap-2">
               <Link
                 href="/logg-inn"
-                className="hidden text-sm text-[#14100e]/70 hover:text-[#14100e] md:inline-flex md:px-3 md:py-2"
+                className="hidden text-sm text-[#1a1c1a]/70 hover:text-[#1a1c1a] md:inline-flex md:px-3 md:py-2"
               >
                 Logg inn
               </Link>
               <Link
                 href="/registrer?rolle=byraa"
-                className="inline-flex items-center gap-1.5 rounded-md bg-[#14100e] px-4 py-2 text-sm font-semibold text-[#fbf7f0] transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-1.5 rounded-md bg-[#1a1c1a] px-4 py-2 text-sm font-semibold text-[#faf9f5] transition-opacity hover:opacity-90"
               >
                 Opprett gratis <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -202,7 +202,7 @@ export default async function PlatformLanding() {
           {/* Warm ambient glow */}
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-[#ff7849]/15 blur-[160px]"
+            className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-[#dfff00]/15 blur-[160px]"
           />
           {/* Faint grid pattern */}
           <div
@@ -220,18 +220,18 @@ export default async function PlatformLanding() {
           />
 
           <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#ff7849]/30 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c84a1f] backdrop-blur-sm">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#dfff00]/30 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#576500] backdrop-blur-sm">
               <Target className="h-3 w-3" /> For norske byrå og konsulenter
             </div>
-            <h1 className="text-balance max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight text-[#14100e] sm:text-6xl md:text-[5.25rem]">
+            <h1 className="text-balance max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight text-[#1a1c1a] sm:text-6xl md:text-[5.25rem]">
               Leads rett i pipelinen.{" "}
-              <span className="block text-[#c84a1f]">CRM gratis.</span>
+              <span className="block text-[#576500]">CRM gratis.</span>
             </h1>
-            <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-[#64594f] md:text-xl">
+            <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-[#6b6d68] md:text-xl">
               Pipeline, AI-tilbudsskriver, prosjektstyring og timer —{" "}
-              <span className="text-[#14100e]">gratis for alltid</span>.
+              <span className="text-[#1a1c1a]">gratis for alltid</span>.
               Oppgrader for å få{" "}
-              <span className="text-[#14100e]">
+              <span className="text-[#1a1c1a]">
                 kvalifiserte leads levert automatisk
               </span>
               .
@@ -239,18 +239,18 @@ export default async function PlatformLanding() {
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/registrer?rolle=byraa"
-                className="inline-flex h-12 items-center gap-2 rounded-md bg-[#14100e] px-7 text-base font-semibold text-white shadow-lg shadow-[#14100e]/20 transition-transform hover:-translate-y-px"
+                className="inline-flex h-12 items-center gap-2 rounded-md bg-[#1a1c1a] px-7 text-base font-semibold text-white shadow-lg shadow-[#1a1c1a]/20 transition-transform hover:-translate-y-px"
               >
                 Opprett gratis konto <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="#plattform"
-                className="inline-flex h-12 items-center gap-2 rounded-md border border-[#14100e]/15 bg-white px-7 text-base font-medium text-[#14100e] transition-colors hover:bg-[#14100e] hover:text-white"
+                className="inline-flex h-12 items-center gap-2 rounded-md border border-[#1a1c1a]/15 bg-white px-7 text-base font-medium text-[#1a1c1a] transition-colors hover:bg-[#1a1c1a] hover:text-white"
               >
                 Se plattformen
               </Link>
             </div>
-            <p className="mt-4 text-xs text-[#64594f]">
+            <p className="mt-4 text-xs text-[#6b6d68]">
               Ingen kort · Gratis for alltid · Lead-abonnement fra 2 990 kr/mnd
             </p>
           </div>
@@ -259,9 +259,9 @@ export default async function PlatformLanding() {
           <div className="relative mx-auto mt-16 w-full max-w-6xl">
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[3rem] bg-[#ff7849]/10 blur-[80px]"
+              className="pointer-events-none absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[3rem] bg-[#dfff00]/10 blur-[80px]"
             />
-            <div className="relative overflow-hidden rounded-xl bg-[#14100e] ring-1 ring-[#14100e]/10 shadow-[0_40px_80px_rgba(20,16,14,0.25)]">
+            <div className="relative overflow-hidden rounded-xl bg-[#1a1c1a] ring-1 ring-[#1a1c1a]/10 shadow-[0_40px_80px_rgba(20,16,14,0.25)]">
               <div className="flex items-center gap-2 border-b border-white/5 bg-[#100c0a] px-5 py-3">
                 <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
                 <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
@@ -288,14 +288,14 @@ export default async function PlatformLanding() {
         <section id="hvorfor" className="px-6 py-28 md:py-32">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-16 max-w-3xl">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c84a1f]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#576500]">
                 Lead-flyten
               </div>
-              <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1c1a] md:text-5xl">
                 Du trenger ikke drive markedsføring.{" "}
-                <span className="text-[#c84a1f]">Det gjør vi.</span>
+                <span className="text-[#576500]">Det gjør vi.</span>
               </h2>
-              <p className="mt-5 max-w-2xl text-lg text-[#64594f]">
+              <p className="mt-5 max-w-2xl text-lg text-[#6b6d68]">
                 Vi investerer i SEO, innhold og kampanjer som bringer norske
                 bedrifter til innovena.no. Du bruker tiden på å vinne dealer —
                 ikke jakte dem.
@@ -326,8 +326,8 @@ export default async function PlatformLanding() {
               />
             </div>
 
-            <div className="mt-10 rounded-lg border border-[#ff7849]/30 bg-[#fff4ed] p-6 text-sm text-[#64594f]">
-              <strong className="text-[#14100e]">
+            <div className="mt-10 rounded-lg border border-[#dfff00]/30 bg-[#fff4ed] p-6 text-sm text-[#6b6d68]">
+              <strong className="text-[#1a1c1a]">
                 Kun 3–5 byrå per lead.
               </strong>{" "}
               Ingen spam-konkurranse som på Mittanbud. Vi holder listen kort —
@@ -341,19 +341,19 @@ export default async function PlatformLanding() {
         ======================================================== */}
         <section
           id="plattform"
-          className="border-y border-[#14100e]/5 bg-[#f3ede1] px-6 py-28 md:py-32"
+          className="border-y border-[#1a1c1a]/5 bg-[#f4f4f0] px-6 py-28 md:py-32"
         >
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-7 lg:pr-8">
               <CapLabel>Pipeline</CapLabel>
-              <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1c1a] md:text-5xl">
                 Pipeline som faktisk holder seg oppdatert
               </h2>
-              <p className="text-lg text-[#64594f]">
+              <p className="text-lg text-[#6b6d68]">
                 Dra-og-slipp mellom stadier. Se hvem som eier hvert lead, hva
                 det er verdt, og hva som må skje videre.
               </p>
-              <ul className="space-y-3 text-[#14100e]">
+              <ul className="space-y-3 text-[#1a1c1a]">
                 {[
                   "Innovena-leads og egne leads i samme pipeline",
                   "Tildel til teammedlem med aktivitetslogg",
@@ -361,7 +361,7 @@ export default async function PlatformLanding() {
                   "Kontakter, meldinger og filer samlet per lead",
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
-                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#c84a1f]" />
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#576500]" />
                     {b}
                   </li>
                 ))}
@@ -377,7 +377,7 @@ export default async function PlatformLanding() {
         {/* =======================================================
             PRODUCT SECTION 2 — AI BID WRITER (dark band)
         ======================================================== */}
-        <section className="bg-[#14100e] px-6 py-28 text-[#f6f1ea] md:py-32">
+        <section className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea] md:py-32">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1.4fr_1fr]">
             <ProductFrame
               src="/product-shots/ai-bid-writer.png"
@@ -401,7 +401,7 @@ export default async function PlatformLanding() {
                   "Send til e-signering direkte fra editoren",
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
-                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#ff9975]" />
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#dfff00]" />
                     {b}
                   </li>
                 ))}
@@ -413,18 +413,18 @@ export default async function PlatformLanding() {
         {/* =======================================================
             PRODUCT SECTION 3 — PROJECT WORKSPACE (cream)
         ======================================================== */}
-        <section className="bg-[#fbf7f0] px-6 py-28 md:py-32">
+        <section className="bg-[#faf9f5] px-6 py-28 md:py-32">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-7 lg:pr-8">
               <CapLabel>Prosjekter</CapLabel>
-              <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-[#1a1c1a] md:text-5xl">
                 Prosjektplanen skriver seg selv
               </h2>
-              <p className="text-lg text-[#64594f]">
+              <p className="text-lg text-[#6b6d68]">
                 Når kunden aksepterer tilbudet lager AI hele planen — oppgaver,
                 milepæler og kundeavhengigheter basert på det vunne tilbudet.
               </p>
-              <ul className="space-y-3 text-[#14100e]">
+              <ul className="space-y-3 text-[#1a1c1a]">
                 {[
                   "Realistiske frister spredd over leveranseperioden",
                   "Kundens oppgaver (tilganger, innhold) holdes separate",
@@ -432,7 +432,7 @@ export default async function PlatformLanding() {
                   "Kunden følger fremdriften i egen portal",
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
-                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#c84a1f]" />
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#576500]" />
                     {b}
                   </li>
                 ))}
@@ -448,7 +448,7 @@ export default async function PlatformLanding() {
         {/* =======================================================
             PRODUCT SECTION 4 — TIME TRACKING (dark band)
         ======================================================== */}
-        <section className="bg-[#14100e] px-6 py-28 text-[#f6f1ea] md:py-32">
+        <section className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea] md:py-32">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1.4fr_1fr]">
             <ProductFrame
               src="/product-shots/time-tracking.png"
@@ -472,7 +472,7 @@ export default async function PlatformLanding() {
                   "Eksport til Fiken, Tripletex og CSV",
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
-                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#ff9975]" />
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[#dfff00]" />
                     {b}
                   </li>
                 ))}
@@ -484,11 +484,11 @@ export default async function PlatformLanding() {
         {/* =======================================================
             CAPABILITIES GRID (light)
         ======================================================== */}
-        <section className="bg-[#fbf7f0] px-6 py-28">
+        <section className="bg-[#faf9f5] px-6 py-28">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-14 max-w-2xl">
               <CapLabel>I plattformen</CapLabel>
-              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#1a1c1a] md:text-5xl">
                 Åtte verktøy. Inkludert i gratis-planen.
               </h2>
             </div>
@@ -505,13 +505,13 @@ export default async function PlatformLanding() {
               ].map((f) => (
                 <div
                   key={f.title}
-                  className="rounded-lg bg-white p-6 ring-1 ring-[#14100e]/5 transition-all hover:ring-[#ff7849]/30"
+                  className="rounded-lg bg-white p-6 ring-1 ring-[#1a1c1a]/5 transition-all hover:ring-[#dfff00]/30"
                 >
-                  <f.icon className="mb-4 h-5 w-5 text-[#c84a1f]" strokeWidth={1.5} />
-                  <h4 className="text-sm font-semibold text-[#14100e]">
+                  <f.icon className="mb-4 h-5 w-5 text-[#576500]" strokeWidth={1.5} />
+                  <h4 className="text-sm font-semibold text-[#1a1c1a]">
                     {f.title}
                   </h4>
-                  <p className="mt-1 text-xs leading-relaxed text-[#64594f]">
+                  <p className="mt-1 text-xs leading-relaxed text-[#6b6d68]">
                     {f.body}
                   </p>
                 </div>
@@ -525,7 +525,7 @@ export default async function PlatformLanding() {
         ======================================================== */}
         <section
           id="for-deg"
-          className="bg-[#14100e] px-6 py-28 text-[#f6f1ea] md:py-32"
+          className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea] md:py-32"
         >
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-16 max-w-3xl">
@@ -541,8 +541,8 @@ export default async function PlatformLanding() {
 
             <div className="grid gap-5 md:grid-cols-2">
               {/* Byråer */}
-              <div className="flex flex-col rounded-xl bg-[#1b1613] p-10 ring-1 ring-white/5">
-                <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#ff7849]/15 text-[#ff9975]">
+              <div className="flex flex-col rounded-xl bg-[#1a1c1a] p-10 ring-1 ring-white/5">
+                <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#dfff00]/15 text-[#dfff00]">
                   <Users className="h-5 w-5" />
                 </div>
                 <h3 className="text-2xl font-bold tracking-tight text-white">
@@ -562,7 +562,7 @@ export default async function PlatformLanding() {
                     "Timeføring per konsulent og prosjekt",
                   ].map((b) => (
                     <li key={b} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff9975]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dfff00]" />
                       {b}
                     </li>
                   ))}
@@ -576,8 +576,8 @@ export default async function PlatformLanding() {
               </div>
 
               {/* Konsulenter */}
-              <div className="flex flex-col rounded-xl bg-[#1b1613] p-10 ring-1 ring-white/5">
-                <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#ff7849]/15 text-[#ff9975]">
+              <div className="flex flex-col rounded-xl bg-[#1a1c1a] p-10 ring-1 ring-white/5">
+                <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#dfff00]/15 text-[#dfff00]">
                   <Sparkles className="h-5 w-5" />
                 </div>
                 <h3 className="text-2xl font-bold tracking-tight text-white">
@@ -596,7 +596,7 @@ export default async function PlatformLanding() {
                     "Fakturering og timekontroll innebygd",
                   ].map((b) => (
                     <li key={b} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff9975]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dfff00]" />
                       {b}
                     </li>
                   ))}
@@ -620,15 +620,15 @@ export default async function PlatformLanding() {
         {/* =======================================================
             PRICING
         ======================================================== */}
-        <section id="pris" className="bg-[#f3ede1] px-6 py-28 md:py-32">
+        <section id="pris" className="bg-[#f4f4f0] px-6 py-28 md:py-32">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-16 text-center">
               <CapLabel>Pris</CapLabel>
-              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#1a1c1a] md:text-5xl">
                 Gratis arbeidsflate.{" "}
-                <span className="text-[#c84a1f]">Betal for leads.</span>
+                <span className="text-[#576500]">Betal for leads.</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-lg text-[#64594f]">
+              <p className="mx-auto mt-5 max-w-2xl text-lg text-[#6b6d68]">
                 Vi tjener når du tjener. Bruk CRM-et fritt — oppgrader når du
                 vil ha leads fra innovena.no levert automatisk.
               </p>
@@ -641,16 +641,16 @@ export default async function PlatformLanding() {
             </div>
 
             {/* Marketing upsell */}
-            <div className="mt-6 flex flex-col items-start justify-between gap-6 rounded-lg bg-white p-8 ring-1 ring-[#14100e]/5 md:flex-row md:items-center">
+            <div className="mt-6 flex flex-col items-start justify-between gap-6 rounded-lg bg-white p-8 ring-1 ring-[#1a1c1a]/5 md:flex-row md:items-center">
               <div className="flex items-start gap-5">
-                <div className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#ff7849]/15 text-[#c84a1f]">
+                <div className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#dfff00]/15 text-[#576500]">
                   <Megaphone className="h-5 w-5" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-[#14100e]">
+                  <h4 className="text-lg font-semibold text-[#1a1c1a]">
                     Markedsføringspakker for vekst
                   </h4>
-                  <p className="mt-1 text-sm text-[#64594f]">
+                  <p className="mt-1 text-sm text-[#6b6d68]">
                     Fremhevet plassering, kategorispesifikk eksponering og
                     PR-kampanjer. Fra 4 990 kr/mnd — lanseres når lead-supply
                     skaleres.
@@ -659,22 +659,22 @@ export default async function PlatformLanding() {
               </div>
               <a
                 href="mailto:salg@innovena.no"
-                className="inline-flex shrink-0 items-center gap-2 rounded-md border border-[#14100e]/15 bg-transparent px-5 py-3 text-sm font-medium text-[#14100e] transition-colors hover:bg-[#14100e] hover:text-white"
+                className="inline-flex shrink-0 items-center gap-2 rounded-md border border-[#1a1c1a]/15 bg-transparent px-5 py-3 text-sm font-medium text-[#1a1c1a] transition-colors hover:bg-[#1a1c1a] hover:text-white"
               >
                 Snakk med salg <ArrowUpRight className="h-4 w-4" />
               </a>
             </div>
 
             {/* Value anchor */}
-            <div className="mt-10 rounded-lg border border-[#14100e]/10 bg-white p-6 text-sm text-[#64594f]">
-              <strong className="text-[#14100e]">Sammenlikn:</strong> 10
+            <div className="mt-10 rounded-lg border border-[#1a1c1a]/10 bg-white p-6 text-sm text-[#6b6d68]">
+              <strong className="text-[#1a1c1a]">Sammenlikn:</strong> 10
               kvalifiserte B2B-leads via Google Ads eller kald outbound koster
               typisk 15–25 000 kr/mnd i annonsebudsjett — uten
               AI-match-algoritme, uten CRM, uten prosjektstyring. Du får alt
               dette på Elite for 6 990 kr/mnd.
             </div>
 
-            <div className="mt-8 grid gap-4 text-center text-xs text-[#64594f] md:grid-cols-3">
+            <div className="mt-8 grid gap-4 text-center text-xs text-[#6b6d68] md:grid-cols-3">
               <div>Alle priser eks. mva.</div>
               <div>Ingen bindingstid — pauses når du vil</div>
               <div>Data lagret i EU · GDPR-kompatibel</div>
@@ -685,23 +685,23 @@ export default async function PlatformLanding() {
         {/* =======================================================
             FROM THE TEAM
         ======================================================== */}
-        <section className="bg-[#14100e] px-6 py-28 text-[#f6f1ea]">
+        <section className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea]">
           <div className="mx-auto w-full max-w-4xl">
-            <div className="rounded-xl bg-[#1b1613] p-10 ring-1 ring-[#ff7849]/15 md:p-14">
-              <div className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#ff9975]">
+            <div className="rounded-xl bg-[#1a1c1a] p-10 ring-1 ring-[#dfff00]/15 md:p-14">
+              <div className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#dfff00]">
                 Fra teamet bak
               </div>
               <blockquote className="text-xl leading-relaxed text-white md:text-2xl">
-                <span className="text-[#ff9975]">&ldquo;</span>
+                <span className="text-[#dfff00]">&ldquo;</span>
                 Vi har alle bakgrunn fra byrå- og tech-verdenen. Vi ville ha
                 leads uten å drive markedsføring hele tiden — og CRM-verktøy
                 som faktisk ble brukt hver dag. Så bygde vi plattformen vi
                 selv trengte. CRM-et er gratis fordi det er riktig — vi tjener
                 når dere vinner deals, ikke før.
-                <span className="text-[#ff9975]">&rdquo;</span>
+                <span className="text-[#dfff00]">&rdquo;</span>
               </blockquote>
               <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f] text-xs font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#dfff00] to-[#576500] text-xs font-bold text-[#1a1c1a]">
                   IN
                 </div>
                 <div>
@@ -720,11 +720,11 @@ export default async function PlatformLanding() {
         {/* =======================================================
             FAQ
         ======================================================== */}
-        <section id="faq" className="bg-[#fbf7f0] px-6 py-28 md:py-32">
+        <section id="faq" className="bg-[#faf9f5] px-6 py-28 md:py-32">
           <div className="mx-auto w-full max-w-3xl">
             <div className="mb-14 text-center">
               <CapLabel>Spørsmål</CapLabel>
-              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#14100e] md:text-5xl">
+              <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#1a1c1a] md:text-5xl">
                 Det de fleste lurer på
               </h2>
             </div>
@@ -732,16 +732,16 @@ export default async function PlatformLanding() {
               {FAQ_ITEMS.map((item, i) => (
                 <details
                   key={i}
-                  className="group rounded-lg bg-white ring-1 ring-[#14100e]/5 [&_summary::-webkit-details-marker]:hidden"
+                  className="group rounded-lg bg-white ring-1 ring-[#1a1c1a]/5 [&_summary::-webkit-details-marker]:hidden"
                   {...(i === 0 ? { open: true } : {})}
                 >
                   <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left">
-                    <h4 className="text-base font-semibold text-[#14100e] md:text-lg">
+                    <h4 className="text-base font-semibold text-[#1a1c1a] md:text-lg">
                       {item.q}
                     </h4>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-[#64594f] transition-transform group-open:rotate-180 group-open:text-[#c84a1f]" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-[#6b6d68] transition-transform group-open:rotate-180 group-open:text-[#576500]" />
                   </summary>
-                  <p className="border-t border-[#14100e]/5 px-6 py-5 text-sm leading-relaxed text-[#64594f]">
+                  <p className="border-t border-[#1a1c1a]/5 px-6 py-5 text-sm leading-relaxed text-[#6b6d68]">
                     {item.a}
                   </p>
                 </details>
@@ -753,14 +753,14 @@ export default async function PlatformLanding() {
         {/* =======================================================
             FINAL CTA
         ======================================================== */}
-        <section className="bg-[#fbf7f0] px-6 pb-28">
+        <section className="bg-[#faf9f5] px-6 pb-28">
           <div
-            className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl bg-[#14100e] p-14 text-center text-[#f6f1ea] md:p-20"
+            className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl bg-[#1a1c1a] p-14 text-center text-[#f6f1ea] md:p-20"
             style={{ boxShadow: "0 40px 80px rgba(20, 16, 14, 0.2)" }}
           >
             <div
               aria-hidden
-              className="pointer-events-none absolute -top-20 right-0 h-72 w-72 rounded-full bg-[#ff7849]/25 blur-3xl"
+              className="pointer-events-none absolute -top-20 right-0 h-72 w-72 rounded-full bg-[#dfff00]/25 blur-3xl"
             />
             <div className="relative space-y-6">
               <h2 className="text-balance text-4xl font-bold tracking-tight text-white md:text-5xl">
@@ -773,7 +773,7 @@ export default async function PlatformLanding() {
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link
                   href="/registrer?rolle=byraa"
-                  className="inline-flex h-12 items-center gap-2 rounded-md bg-[#ff7849] px-8 text-base font-semibold text-white shadow-xl shadow-[#ff7849]/25 transition-transform hover:-translate-y-px"
+                  className="inline-flex h-12 items-center gap-2 rounded-md bg-[#dfff00] px-8 text-base font-semibold text-[#1a1c1a] shadow-xl shadow-[#dfff00]/25 transition-transform hover:-translate-y-px"
                 >
                   Opprett gratis konto <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -791,18 +791,18 @@ export default async function PlatformLanding() {
         {/* =======================================================
             FOOTER
         ======================================================== */}
-        <footer className="border-t border-[#14100e]/5 bg-[#f3ede1] px-6 py-16">
+        <footer className="border-t border-[#1a1c1a]/5 bg-[#f4f4f0] px-6 py-16">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-5">
               <div className="col-span-2">
                 <Link
                   href="/"
-                  className="flex items-center gap-2 text-base font-semibold text-[#14100e]"
+                  className="flex items-center gap-2 text-base font-semibold text-[#1a1c1a]"
                 >
                   <Logo />
                   Innovena
                 </Link>
-                <p className="mt-4 max-w-sm text-sm leading-relaxed text-[#64594f]">
+                <p className="mt-4 max-w-sm text-sm leading-relaxed text-[#6b6d68]">
                   Kvalifiserte leads for moderne norske byrå. Vi driver
                   innovena.no og leverer rett i pipelinen.
                 </p>
@@ -833,7 +833,7 @@ export default async function PlatformLanding() {
                 ]}
               />
             </div>
-            <div className="flex flex-col items-center justify-between gap-3 border-t border-[#14100e]/10 pt-8 text-sm text-[#64594f] md:flex-row">
+            <div className="flex flex-col items-center justify-between gap-3 border-t border-[#1a1c1a]/10 pt-8 text-sm text-[#6b6d68] md:flex-row">
               <p>© {new Date().getFullYear()} Innovena Platform AS</p>
               <div className="flex items-center gap-2 text-xs">
                 <ShieldCheck className="h-3 w-3" />
@@ -854,7 +854,7 @@ export default async function PlatformLanding() {
 function Logo() {
   return (
     <span
-      className="inline-block h-5 w-5 rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f]"
+      className="inline-block h-5 w-5 rounded-md bg-gradient-to-br from-[#dfff00] to-[#576500]"
       aria-hidden
     />
   );
@@ -870,7 +870,7 @@ function CapLabel({
   return (
     <div
       className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${
-        tone === "dark" ? "text-[#ff9975]" : "text-[#c84a1f]"
+        tone === "dark" ? "text-[#dfff00]" : "text-[#576500]"
       }`}
     >
       {children}
@@ -895,26 +895,26 @@ function FlowCard({
     <div
       className={`rounded-lg p-7 ${
         highlight
-          ? "bg-gradient-to-br from-[#fff4ed] to-white ring-1 ring-[#ff7849]/30 shadow-lg shadow-[#ff7849]/10"
-          : "bg-white ring-1 ring-[#14100e]/5"
+          ? "bg-gradient-to-br from-[#fff4ed] to-white ring-1 ring-[#dfff00]/30 shadow-lg shadow-[#dfff00]/10"
+          : "bg-white ring-1 ring-[#1a1c1a]/5"
       }`}
     >
       <div className="mb-5 flex items-center justify-between">
         <div
           className={`inline-flex h-10 w-10 items-center justify-center rounded-md ${
             highlight
-              ? "bg-[#ff7849] text-white"
-              : "bg-[#ff7849]/15 text-[#c84a1f]"
+              ? "bg-[#dfff00] text-[#1a1c1a]"
+              : "bg-[#dfff00]/15 text-[#576500]"
           }`}
         >
           <Icon className="h-5 w-5" />
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64594f]/50">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b6d68]/50">
           {n}
         </span>
       </div>
-      <h3 className="text-lg font-semibold text-[#14100e]">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-[#64594f]">{body}</p>
+      <h3 className="text-lg font-semibold text-[#1a1c1a]">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-[#6b6d68]">{body}</p>
     </div>
   );
 }
@@ -923,7 +923,7 @@ function FlowArrow() {
   return (
     <div className="flex items-center justify-center">
       <ArrowRight
-        className="h-5 w-5 rotate-90 text-[#ff7849] md:rotate-0"
+        className="h-5 w-5 rotate-90 text-[#576500] md:rotate-0"
         strokeWidth={1.5}
       />
     </div>
@@ -944,12 +944,12 @@ function ProductFrame({
       <div
         aria-hidden
         className={`pointer-events-none absolute -inset-6 -z-10 rounded-3xl blur-3xl ${
-          dark ? "bg-[#ff7849]/15" : "bg-[#ff7849]/10"
+          dark ? "bg-[#dfff00]/15" : "bg-[#dfff00]/10"
         }`}
       />
       <div
         className={`overflow-hidden rounded-xl ${
-          dark ? "ring-1 ring-white/10" : "ring-1 ring-[#14100e]/10"
+          dark ? "ring-1 ring-white/10" : "ring-1 ring-[#1a1c1a]/10"
         } shadow-[0_30px_70px_rgba(0,0,0,0.35)]`}
       >
         <Image
@@ -980,18 +980,18 @@ function PricingCard(t: {
     <div
       className={`relative flex flex-col rounded-xl p-8 ${
         t.featured
-          ? "bg-[#14100e] text-white ring-2 ring-[#ff7849] shadow-xl shadow-[#ff7849]/20"
-          : "bg-white ring-1 ring-[#14100e]/10"
+          ? "bg-[#1a1c1a] text-white ring-2 ring-[#dfff00] shadow-xl shadow-[#dfff00]/20"
+          : "bg-white ring-1 ring-[#1a1c1a]/10"
       }`}
     >
       {t.featured ? (
-        <div className="absolute -top-3 left-8 rounded-md bg-[#ff7849] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+        <div className="absolute -top-3 left-8 rounded-md bg-[#dfff00] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1a1c1a]">
           {t.kicker}
         </div>
       ) : null}
       <div
         className={`mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-          t.featured ? "text-[#ff9975]" : "text-[#c84a1f]"
+          t.featured ? "text-[#dfff00]" : "text-[#576500]"
         }`}
       >
         {t.name}
@@ -999,14 +999,14 @@ function PricingCard(t: {
       <div className="mb-2 flex items-baseline gap-1">
         <span
           className={`text-4xl font-bold ${
-            t.featured ? "text-white" : "text-[#14100e]"
+            t.featured ? "text-white" : "text-[#1a1c1a]"
           }`}
         >
           {t.price}
         </span>
         <span
           className={`text-sm ${
-            t.featured ? "text-white/60" : "text-[#64594f]"
+            t.featured ? "text-white/60" : "text-[#6b6d68]"
           }`}
         >
           {t.period}
@@ -1014,7 +1014,7 @@ function PricingCard(t: {
       </div>
       <p
         className={`mb-7 text-sm ${
-          t.featured ? "text-white/70" : "text-[#64594f]"
+          t.featured ? "text-white/70" : "text-[#6b6d68]"
         }`}
       >
         {t.desc}
@@ -1024,12 +1024,12 @@ function PricingCard(t: {
           <li
             key={f}
             className={`flex items-start gap-2 ${
-              t.featured ? "text-white/90" : "text-[#14100e]"
+              t.featured ? "text-white/90" : "text-[#1a1c1a]"
             } ${i === 0 && f.startsWith("Alt i") ? "italic opacity-70" : ""}`}
           >
             <Check
               className={`mt-0.5 h-4 w-4 shrink-0 ${
-                t.featured ? "text-[#ff9975]" : "text-[#c84a1f]"
+                t.featured ? "text-[#dfff00]" : "text-[#576500]"
               }`}
             />
             <span>{f}</span>
@@ -1039,7 +1039,7 @@ function PricingCard(t: {
           <li
             key={f}
             className={`flex items-start gap-2 text-sm ${
-              t.featured ? "text-white/40" : "text-[#64594f]"
+              t.featured ? "text-white/40" : "text-[#6b6d68]"
             }`}
           >
             <span className="mt-1 block h-0.5 w-3 shrink-0 bg-current" />
@@ -1051,15 +1051,15 @@ function PricingCard(t: {
         href={t.href}
         className={`mt-auto inline-flex h-11 items-center justify-center gap-1.5 rounded-md text-sm font-semibold transition-transform hover:-translate-y-px ${
           t.featured
-            ? "bg-[#ff7849] text-white shadow-lg shadow-[#ff7849]/30"
-            : "border border-[#14100e]/15 bg-transparent text-[#14100e] hover:bg-[#14100e] hover:text-white"
+            ? "bg-[#dfff00] text-[#1a1c1a] shadow-lg shadow-[#dfff00]/30"
+            : "border border-[#1a1c1a]/15 bg-transparent text-[#1a1c1a] hover:bg-[#1a1c1a] hover:text-white"
         }`}
       >
         {t.cta}
         <ArrowRight className="h-3.5 w-3.5" />
       </Link>
       {t.name === "Gratis" ? (
-        <p className="mt-3 text-center text-xs text-[#64594f]">
+        <p className="mt-3 text-center text-xs text-[#6b6d68]">
           Ingen kort · Gratis forever
         </p>
       ) : null}
@@ -1081,7 +1081,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h4 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64594f]/60">
+      <h4 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b6d68]/60">
         {title}
       </h4>
       <ul className="space-y-3">
@@ -1089,7 +1089,7 @@ function FooterCol({
           <li key={l.label}>
             <Link
               href={l.href}
-              className="text-sm text-[#64594f] transition-colors hover:text-[#14100e]"
+              className="text-sm text-[#6b6d68] transition-colors hover:text-[#1a1c1a]"
             >
               {l.label}
             </Link>

@@ -74,7 +74,7 @@ export default async function ByraaOversikt() {
       </div>
 
       {!hasCategories && !pendingApproval ? (
-        <Card className="border-[#ff7849]/50 bg-[#ff7849]/5">
+        <Card className="border-[#dfff00]/50 bg-[#dfff00]/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               ⚠️ Du får ingen leads før kategorier er valgt

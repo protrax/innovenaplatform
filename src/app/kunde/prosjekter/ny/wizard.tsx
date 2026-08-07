@@ -478,7 +478,7 @@ function Step1({
 
         <div className="flex items-center justify-between pt-2">
           <p className="text-xs text-muted-foreground">
-            🔒 Forespørselen din deles kun med matchende byråer — aldri offentlig.
+            🔒 Forespørselen din deles kun med matchende byråer og konsulenter — aldri offentlig.
           </p>
           <Button
             onClick={onSubmit}
@@ -1031,7 +1031,7 @@ function Step5({
         <div className="rounded-md border border-brand/40 bg-brand/5 p-3 text-sm">
           <p className="font-medium">Når du publiserer:</p>
           <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
-            <li>✓ Opptil 5 matchende byråer får forespørselen med én gang</li>
+            <li>✓ Opptil 5 matchende byråer og konsulenter får forespørselen med én gang</li>
             <li>✓ Du får tilbud direkte i dashbordet ditt</li>
             <li>✓ 100% gratis — du betaler kun hvis du aksepterer et tilbud</li>
           </ul>

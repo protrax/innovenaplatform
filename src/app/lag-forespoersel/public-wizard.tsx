@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,11 +73,15 @@ export function PublicWizard({
   aiEnabled: boolean;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [state, setState] = useState<PublicWizardState>(publicDefault);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  // Tracks whether we've already auto-advanced based on inbound query params
+  // so we don't loop or fight the user if they hit Back from step 2.
+  const inboundHandledRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -89,6 +93,105 @@ export function PublicWizard({
     }
     setHydrated(true);
   }, []);
+
+  // ─── Inbound traffic from innovena.no ──────────────────────────────────
+  // The marketing site posts users into the wizard with prefilled context:
+  //   ?url=…&description=…&service=…&source=…
+  // We hydrate state.userInput / state.url, optionally pre-select a category
+  // from `service`, and skip step 1 (with AI categorize + URL enrich) when
+  // there's enough info to make step 2 useful immediately.
+  useEffect(() => {
+    if (!hydrated || inboundHandledRef.current) return;
+    const qDescription = searchParams.get("description")?.trim() ?? "";
+    const qUrl = searchParams.get("url")?.trim() ?? "";
+    const qService = searchParams.get("service")?.trim() ?? "";
+
+    if (!qDescription && !qUrl && !qService) return;
+    inboundHandledRef.current = true;
+
+    // Only hydrate fields the user hasn't already filled (respect anything
+    // already in localStorage from a prior visit).
+    setState((prev) => ({
+      ...prev,
+      userInput: prev.userInput || qDescription,
+      url: prev.url || qUrl,
+      selectedCategorySlugs:
+        prev.selectedCategorySlugs.length > 0
+          ? prev.selectedCategorySlugs
+          : qService && categories.some((c) => c.slug === qService)
+            ? [qService]
+            : prev.selectedCategorySlugs,
+    }));
+
+    // Auto-advance: if we have any combination of description/url, run the
+    // step-1 AI work and land the user on step 2.
+    if (qDescription || qUrl) {
+      // Defer one tick so the setState above has flushed before submitStep1
+      // reads it.
+      setTimeout(() => {
+        const updatedInput = qDescription || state.userInput;
+        if (!updatedInput.trim()) return;
+        // Mirror submitStep1 but read directly from query params to avoid the
+        // setState race.
+        if (!aiEnabled) {
+          setState((prev) => ({ ...prev, step: 2 }));
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+        runAiStep("Analyserer det du har sendt inn…", async () => {
+          const tasks: Array<Promise<unknown>> = [
+            postJson<{ category_slugs: string[] }>(
+              "/api/public/wizard/categorize",
+              { text: qDescription || updatedInput },
+            ).then((cat) => {
+              setState((prev) => ({
+                ...prev,
+                selectedCategorySlugs:
+                  prev.selectedCategorySlugs.length > 0
+                    ? prev.selectedCategorySlugs
+                    : cat.category_slugs,
+              }));
+            }),
+          ];
+          if (qUrl) {
+            setLoadingMessage("Leser nettsiden din…");
+            tasks.push(
+              postJson<NonNullable<WizardState["enrichment"]>>(
+                "/api/public/wizard/enrich-url",
+                { url: qUrl },
+              ).then((enrichment) => {
+                const notesLines = [
+                  enrichment.tone && `Tonalitet: ${enrichment.tone}`,
+                  enrichment.current_stack_signals.length > 0 &&
+                    `Teknisk: ${enrichment.current_stack_signals.join(", ")}`,
+                  enrichment.notes,
+                ].filter(Boolean);
+                setState((prev) => ({
+                  ...prev,
+                  enrichment,
+                  enrichedFromUrl: qUrl,
+                  ctxCompanyName:
+                    prev.ctxCompanyName || enrichment.company_name || "",
+                  ctxIndustry: prev.ctxIndustry || enrichment.industry || "",
+                  ctxOffering: prev.ctxOffering || enrichment.offering || "",
+                  ctxTargetAudience:
+                    prev.ctxTargetAudience || enrichment.target_audience || "",
+                  ctxLocation: prev.ctxLocation || enrichment.location || "",
+                  ctxNotes: prev.ctxNotes || notesLines.join("\n"),
+                }));
+              }),
+            );
+          }
+          await Promise.allSettled(tasks);
+          setState((prev) => ({ ...prev, step: 2 }));
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }, 0);
+    }
+    // We deliberately depend on hydrated only — search params shouldn't
+    // re-trigger this once we've handled them.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -505,7 +608,7 @@ function Step1({
         ) : null}
         <div className="flex items-center justify-between pt-2">
           <p className="text-xs text-muted-foreground">
-            🔒 Forespørselen deles kun med matchende byråer — aldri offentlig.
+            🔒 Forespørselen deles kun med matchende byråer og konsulenter — aldri offentlig.
           </p>
           <Button onClick={onSubmit} variant="brand" disabled={loading} size="lg">
             {loading ? (
@@ -1076,7 +1179,7 @@ function Step5({
           <div className="rounded-md border border-brand/40 bg-brand/5 p-3 text-sm">
             <p className="font-medium">Når du publiserer:</p>
             <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
-              <li>✓ Opptil 5 matchende byråer får forespørselen umiddelbart</li>
+              <li>✓ Opptil 5 matchende byråer og konsulenter får forespørselen umiddelbart</li>
               <li>✓ Vi sender deg en innloggingslenke på e-post</li>
               <li>
                 ✓ 100 % gratis — du betaler kun hvis du aksepterer et tilbud

@@ -4,19 +4,19 @@ import { SignInForm } from "./sign-in-form";
 export default function SignInPage() {
   return (
     <div>
-      <h1 className="text-3xl font-bold tracking-tight text-[#14100e]">
+      <h1 className="text-3xl font-bold tracking-tight text-[#1a1c1a]">
         Velkommen tilbake
       </h1>
-      <p className="mt-2 text-sm text-[#64594f]">
+      <p className="mt-2 text-sm text-[#6b6d68]">
         Logg inn for å fortsette med pipelinen, leadsene og prosjektene dine.
       </p>
       <div className="mt-8 space-y-6">
         <SignInForm />
-        <p className="text-center text-sm text-[#64594f]">
+        <p className="text-center text-sm text-[#6b6d68]">
           Har du ikke konto?{" "}
           <Link
             href="/registrer?rolle=byraa"
-            className="font-semibold text-[#c84a1f] underline-offset-4 hover:underline"
+            className="font-semibold text-[#576500] underline-offset-4 hover:underline"
           >
             Opprett gratis
           </Link>

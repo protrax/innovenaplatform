@@ -6,11 +6,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-screen flex-1">
       {/* Left: form column */}
-      <div className="flex flex-1 flex-col bg-[#fbf7f0]">
+      <div className="flex flex-1 flex-col bg-[#faf9f5]">
         <header className="px-8 py-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-[#64594f] transition-colors hover:text-[#14100e]"
+            className="inline-flex items-center gap-2 text-sm text-[#1a1c1a]/60 transition-colors hover:text-[#1a1c1a]"
           >
             <ArrowLeft className="h-4 w-4" />
             Tilbake til forsiden
@@ -18,15 +18,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </header>
         <main className="flex flex-1 items-center justify-center px-6 pb-16">
           <div className="w-full max-w-sm">
-            <Link
-              href="/"
-              className="mb-10 inline-flex items-center gap-2 text-base font-semibold tracking-tight text-[#14100e]"
-            >
-              <span
-                className="inline-block h-5 w-5 rounded-md bg-gradient-to-br from-[#ff7849] to-[#c84a1f]"
-                aria-hidden
-              />
-              Innovena
+            <Link href="/" className="mb-10 inline-block" aria-label="Innovena – Hjem">
+              <div className="relative h-[30px] w-[130px]">
+                <Image
+                  src="/innovena-logo.png"
+                  fill
+                  sizes="130px"
+                  alt="Innovena"
+                  priority
+                  className="object-contain object-left brightness-0"
+                />
+              </div>
             </Link>
             {children}
           </div>
@@ -34,10 +36,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Right: brand/product panel — hidden on mobile */}
-      <aside className="relative hidden w-[44%] max-w-2xl flex-col justify-between overflow-hidden bg-[#14100e] text-[#f6f1ea] lg:flex">
+      <aside className="relative hidden w-[44%] max-w-2xl flex-col justify-between overflow-hidden bg-[#1a1c1a] text-[#faf9f5] lg:flex">
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-20 top-20 h-[420px] w-[420px] rounded-full bg-[#ff7849]/20 blur-[120px]"
+          className="pointer-events-none absolute -left-20 top-20 h-[420px] w-[420px] rounded-full bg-[#dfff00]/15 blur-[120px]"
         />
         <div
           aria-hidden
@@ -49,12 +51,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         />
 
         <div className="relative p-12">
-          <div className="mb-16 inline-flex items-center gap-2 rounded-full border border-[#ff7849]/30 bg-[#ff7849]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#ff9975]">
+          <div className="mb-16 inline-flex items-center gap-2 border border-[#dfff00]/40 bg-[#dfff00]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#dfff00]">
             For byrå og konsulenter
           </div>
-          <h2 className="max-w-md text-4xl font-bold leading-[1.08] tracking-tight text-white md:text-5xl">
+          <h2 className="max-w-md text-4xl font-extrabold leading-[1.08] tracking-[-0.02em] text-white md:text-5xl">
             Leads rett i pipelinen.{" "}
-            <span className="block text-[#ff9975]">CRM gratis.</span>
+            <span className="block text-[#dfff00]">CRM gratis.</span>
           </h2>
           <ul className="mt-10 space-y-3 text-white/80">
             {[
@@ -63,7 +65,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               "Ingen bindingstid, ingen kortinfo for å starte",
             ].map((b) => (
               <li key={b} className="flex items-start gap-3 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ff9975]" />
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#dfff00]" />
                 {b}
               </li>
             ))}

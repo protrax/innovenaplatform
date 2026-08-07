@@ -381,7 +381,7 @@ function OnboardingCard() {
         </CardTitle>
         <CardDescription>
           Beskriv prosjektet. AI fyller ut detaljene. Få tilbud fra 3–5
-          matchende byråer innen 24 timer.
+          matchende byråer og konsulenter innen 24 timer.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -394,7 +394,7 @@ function OnboardingCard() {
           <OnboardingStep
             n={2}
             title="Motta tilbud"
-            body="Opptil 5 matchende byråer varsles. Du får tilbudene på e-post og her i dashbordet."
+            body="Opptil 5 matchende byråer og konsulenter varsles. Du får tilbudene på e-post og her i dashbordet."
           />
           <OnboardingStep
             n={3}
