@@ -61,7 +61,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <ul className="mt-10 space-y-3 text-white/80">
             {[
               "Pipeline, AI-tilbud og prosjektstyring — gratis",
-              "Kvalifiserte leads fra 990 kr/mnd (Solo)",
+              "Kvalifiserte leads fra 2 990 kr/mnd (Pro Leads)",
               "Ingen bindingstid, ingen kortinfo for å starte",
             ].map((b) => (
               <li key={b} className="flex items-start gap-3 text-sm">

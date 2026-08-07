@@ -146,7 +146,7 @@ export default async function ByraaOversikt() {
           <CardHeader>
             <CardTitle className="text-base">🚀 Lås opp leads</CardTitle>
             <CardDescription>
-              Dere er godkjent. Start abonnement for 990 kr/mnd så begynner
+              Dere er godkjent. Start abonnement fra 2 990 kr/mnd så begynner
               leads å tikke inn i pipelinen.
             </CardDescription>
           </CardHeader>

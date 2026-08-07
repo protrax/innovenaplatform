@@ -5,7 +5,10 @@ import { startSubscriptionCheckout } from "@/lib/stripe/subscriptions";
 
 export const runtime = "nodejs";
 
-const Body = z.object({ tenant_id: z.string().uuid() });
+const Body = z.object({
+  tenant_id: z.string().uuid(),
+  tier: z.enum(["pro", "elite"]).optional(),
+});
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
       tenantName: tenant.name,
       customerEmail: tenant.billing_email ?? user.email ?? "",
       returnPath: "/byraa/abonnement",
+      tier: parsed.data.tier ?? "pro",
     });
     return NextResponse.json({ ok: true, url });
   } catch (err) {

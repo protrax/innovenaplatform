@@ -2,19 +2,28 @@ import { getStripe } from "./client";
 import { clientEnv, serverEnv } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export type SubscriptionTier = "pro" | "elite";
+
 export interface StartCheckoutInput {
   tenantId: string;
   tenantName: string;
   customerEmail: string;
   returnPath: string; // e.g. /byraa/abonnement
+  tier?: SubscriptionTier;
 }
 
 export async function startSubscriptionCheckout(
   input: StartCheckoutInput,
 ): Promise<string> {
-  if (!serverEnv.STRIPE_PRICE_AGENCY_SUBSCRIPTION) {
+  const priceId =
+    input.tier === "elite"
+      ? serverEnv.STRIPE_PRICE_ELITE_SUBSCRIPTION
+      : serverEnv.STRIPE_PRICE_AGENCY_SUBSCRIPTION;
+  if (!priceId) {
     throw new Error(
-      "STRIPE_PRICE_AGENCY_SUBSCRIPTION mangler. Lag et Stripe-produkt + pris (990 kr/mnd) og sett price-ID i .env.local",
+      input.tier === "elite"
+        ? "STRIPE_PRICE_ELITE_SUBSCRIPTION mangler. Lag Stripe-prisen (6 990 kr/mnd) og sett price-ID."
+        : "STRIPE_PRICE_AGENCY_SUBSCRIPTION mangler. Lag Stripe-prisen (2 990 kr/mnd) og sett price-ID.",
     );
   }
 
@@ -48,7 +57,7 @@ export async function startSubscriptionCheckout(
     customer: customerId,
     line_items: [
       {
-        price: serverEnv.STRIPE_PRICE_AGENCY_SUBSCRIPTION,
+        price: priceId,
         quantity: 1,
       },
     ],

@@ -15,6 +15,7 @@ const serverSchema = z.object({
   STRIPE_SECRET_KEY: optional,
   STRIPE_WEBHOOK_SECRET: optional,
   STRIPE_PRICE_AGENCY_SUBSCRIPTION: optional,
+  STRIPE_PRICE_ELITE_SUBSCRIPTION: optional,
   RESEND_API_KEY: optional,
   // Accept either "email@domain.com" or "Name <email@domain.com>" (RFC5322)
   RESEND_FROM_EMAIL: optional,
@@ -38,6 +39,7 @@ export const serverEnv = serverSchema.parse({
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   STRIPE_PRICE_AGENCY_SUBSCRIPTION: process.env.STRIPE_PRICE_AGENCY_SUBSCRIPTION,
+  STRIPE_PRICE_ELITE_SUBSCRIPTION: process.env.STRIPE_PRICE_ELITE_SUBSCRIPTION,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,

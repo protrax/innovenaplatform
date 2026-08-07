@@ -64,7 +64,10 @@ export default async function AbonnementPage({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Lead-abonnement</CardTitle>
-              <CardDescription>990 kr / mnd · ingen bindingstid</CardDescription>
+              <CardDescription>
+                Pro Leads 2 990 kr/mnd (3–5 leads) · Elite 6 990 kr/mnd
+                (10–15 leads + topprioritet) · ingen bindingstid
+              </CardDescription>
             </div>
             <Badge variant={active ? "brand" : "outline"}>
               {subscription?.status ?? "ikke aktiv"}

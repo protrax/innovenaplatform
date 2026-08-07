@@ -13,17 +13,19 @@ export function SubscriptionActions({
   active: boolean;
   stripeConfigured: boolean;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"pro" | "elite" | "portal" | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
 
-  async function startCheckout() {
-    setLoading(true);
+  async function startCheckout(tier: "pro" | "elite") {
+    setLoading(tier);
     setError(null);
     try {
       const res = await fetch("/api/subscriptions/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tenant_id: tenantId }),
+        body: JSON.stringify({ tenant_id: tenantId, tier }),
       });
       const body = await res.json();
       if (!res.ok || !body.url) {
@@ -34,12 +36,12 @@ export function SubscriptionActions({
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ukjent feil");
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   }
 
   async function openPortal() {
-    setLoading(true);
+    setLoading("portal");
     setError(null);
     try {
       const res = await fetch("/api/subscriptions/portal", {
@@ -56,7 +58,7 @@ export function SubscriptionActions({
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ukjent feil");
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   }
 
@@ -66,9 +68,9 @@ export function SubscriptionActions({
         <Button
           variant="outline"
           onClick={openPortal}
-          disabled={loading || !stripeConfigured}
+          disabled={loading !== null || !stripeConfigured}
         >
-          {loading ? (
+          {loading === "portal" ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" /> Åpner…
             </>
@@ -77,19 +79,34 @@ export function SubscriptionActions({
           )}
         </Button>
       ) : (
-        <Button
-          variant="brand"
-          onClick={startCheckout}
-          disabled={loading || !stripeConfigured}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Videresender…
-            </>
-          ) : (
-            "Start abonnement — 990 kr/mnd"
-          )}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="brand"
+            onClick={() => startCheckout("pro")}
+            disabled={loading !== null || !stripeConfigured}
+          >
+            {loading === "pro" ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Videresender…
+              </>
+            ) : (
+              "Start Pro Leads — 2 990 kr/mnd"
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => startCheckout("elite")}
+            disabled={loading !== null || !stripeConfigured}
+          >
+            {loading === "elite" ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Videresender…
+              </>
+            ) : (
+              "Start Elite — 6 990 kr/mnd"
+            )}
+          </Button>
+        </div>
       )}
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
     </div>
