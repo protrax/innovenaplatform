@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ProductMock } from "@/components/product-mock";
 import type { Metadata } from "next";
 import { getCurrentUser, defaultRouteForUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -270,14 +270,7 @@ export default async function PlatformLanding() {
                   <ShieldCheck className="h-3 w-3" /> platform.innovena.no
                 </span>
               </div>
-              <Image
-                src="/product-shots/pipeline.png"
-                alt="Innovena pipeline — Kanban-tavle med kvalifiserte leads"
-                width={1800}
-                height={1200}
-                priority
-                className="h-auto w-full"
-              />
+              <ProductMock variant="kanban" />
             </div>
           </div>
         </section>
@@ -367,10 +360,7 @@ export default async function PlatformLanding() {
                 ))}
               </ul>
             </div>
-            <ProductFrame
-              src="/product-shots/pipeline.png"
-              alt="Pipeline — Kanban-tavle med kort fordelt på stadier"
-            />
+            <ProductFrame variant="kanban" />
           </div>
         </section>
 
@@ -379,11 +369,7 @@ export default async function PlatformLanding() {
         ======================================================== */}
         <section className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea] md:py-32">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1.4fr_1fr]">
-            <ProductFrame
-              src="/product-shots/ai-bid-writer.png"
-              alt="AI-tilbudsskriver — split-view mellom brief og formatert tilbud"
-              dark
-            />
+            <ProductFrame variant="editor" dark />
             <div className="space-y-7 lg:pl-8">
               <CapLabel tone="dark">AI-tilbud</CapLabel>
               <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-white md:text-5xl">
@@ -438,10 +424,7 @@ export default async function PlatformLanding() {
                 ))}
               </ul>
             </div>
-            <ProductFrame
-              src="/product-shots/project-workspace.png"
-              alt="Prosjektstyring — oppgaver, milepæler og team-panel"
-            />
+            <ProductFrame variant="tasks" />
           </div>
         </section>
 
@@ -450,11 +433,7 @@ export default async function PlatformLanding() {
         ======================================================== */}
         <section className="bg-[#1a1c1a] px-6 py-28 text-[#f6f1ea] md:py-32">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1.4fr_1fr]">
-            <ProductFrame
-              src="/product-shots/time-tracking.png"
-              alt="Timekontroll med ukesoversikt og løpende timer"
-              dark
-            />
+            <ProductFrame variant="timer" dark />
             <div className="space-y-7 lg:pl-8">
               <CapLabel tone="dark">Timekontroll</CapLabel>
               <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-white md:text-5xl">
@@ -931,12 +910,10 @@ function FlowArrow() {
 }
 
 function ProductFrame({
-  src,
-  alt,
+  variant,
   dark,
 }: {
-  src: string;
-  alt: string;
+  variant: "kanban" | "editor" | "tasks" | "timer";
   dark?: boolean;
 }) {
   return (
@@ -952,13 +929,7 @@ function ProductFrame({
           dark ? "ring-1 ring-white/10" : "ring-1 ring-[#1a1c1a]/10"
         } shadow-[0_30px_70px_rgba(0,0,0,0.35)]`}
       >
-        <Image
-          src={src}
-          alt={alt}
-          width={1800}
-          height={1200}
-          className="h-auto w-full"
-        />
+        <ProductMock variant={variant} />
       </div>
     </div>
   );

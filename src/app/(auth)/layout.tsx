@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Check } from "lucide-react";
+import { ProductMock } from "@/components/product-mock";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -80,14 +81,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <span className="h-2 w-2 rounded-full bg-white/10" />
               <span className="h-2 w-2 rounded-full bg-white/10" />
             </div>
-            <Image
-              src="/product-shots/pipeline.png"
-              alt=""
-              width={1800}
-              height={1200}
-              className="h-auto w-full"
-              priority={false}
-            />
+            <ProductMock variant="kanban" />
           </div>
         </div>
       </aside>
