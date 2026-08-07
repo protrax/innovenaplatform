@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import {
   LayoutDashboard,
   Building2,
+  Inbox,
   Tag,
   Users,
   Settings,
@@ -26,6 +27,11 @@ export default async function AdminLayout({
           label: "Oversikt",
           href: "/admin",
           icon: <LayoutDashboard className="h-4 w-4" />,
+        },
+        {
+          label: "Leads",
+          href: "/admin/leads",
+          icon: <Inbox className="h-4 w-4" />,
         },
         {
           label: "Byråer",

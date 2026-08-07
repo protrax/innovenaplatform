@@ -4,5 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(request: Request) {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return NextResponse.redirect(new URL("/", request.url), { status: 303 });
+  // Send folk tilbake til hovedsiden, ikke plattformens byrå-landingsside.
+  return NextResponse.redirect("https://innovena.no", { status: 303 });
 }
