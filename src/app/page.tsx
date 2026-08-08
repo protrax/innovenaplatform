@@ -79,8 +79,8 @@ const TIERS = [
     desc: "For byrå og solo-konsulenter som vil ha kvalifiserte leads levert automatisk.",
     features: [
       "Alt i Gratis, pluss:",
-      "Garantert 3–5 leads/mnd",
       "Prioritert matching foran gratis-byråer",
+      "Maks 5 byrå får samme forespørsel",
       "Varsling i sanntid",
       "2,5 % plattformgebyr på betalinger via plattformen",
     ],
@@ -97,7 +97,6 @@ const TIERS = [
     desc: "Top-prioritet i matching. Vinn mer ved å svare raskest.",
     features: [
       "Alt i Pro, pluss:",
-      "Garantert 10–15 leads/mnd",
       "Topprioritet — Elite matches alltid først",
       "Ubegrenset antall teammedlemmer",
       "2,5 % plattformgebyr på betalinger via plattformen",
@@ -119,8 +118,8 @@ const FAQ_ITEMS = [
     a: "Fra innovena.no — vårt forbrukerrettede lead-gen-nettsted. Norske bedrifter fyller ut en AI-assistert brief. Vi validerer, matcher mot dine kategorier, lokasjon og kapasitet, og sender leadet rett i pipelinen din som et nytt kort. Kun 3–5 byrå ser samme lead, så du unngår spam-konkurransen.",
   },
   {
-    q: "Hva betyr 'garantert 3–5 leads/mnd'?",
-    a: "I Pro-planen lover vi minst 3 kvalifiserte leads per måned i dine valgte kategorier. Hvis vi ikke leverer, refunderer vi abonnementet. Lead-kvalitet går alltid foran kvantitet — vi filtrerer hardt.",
+    q: "Hvor mange leads kan jeg regne med?",
+    a: "Vi lover ikke et antall, og du bør være skeptisk til enhver lead-leverandør som gjør det — volumet avhenger av hvilke kategorier du dekker, hvor i landet du er, og hvor mange forespørsler som faktisk kommer inn den måneden. Det vi kan love er hvordan fordelingen fungerer: maks 5 byrå får samme forespørsel, og Pro-byrå matches foran gratis-byrå. Start gratis, se hvilket volum som treffer dine kategorier, og oppgrader først når du vet at det lønner seg.",
   },
   {
     q: "Hvordan kvalifiserer dere leadsene?",
@@ -128,7 +127,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Hva får jeg ekstra med Elite?",
-    a: "Topprioritet i matching — Elite-byråer fylles alltid først inn blant de 3–5 som får leadet (gitt at kategori og kapasitet stemmer), foran Pro- og gratis-byråer. I tillegg dobbel lead-garanti (10–15/mnd), ubegrenset antall teammedlemmer og dedikert Customer Success.",
+    a: "Topprioritet i matching — Elite-byråer fylles alltid først inn blant de maks 5 som får leadet (gitt at kategori og kapasitet stemmer), foran Pro- og gratis-byråer. I tillegg ubegrenset antall teammedlemmer og dedikert Customer Success.",
   },
   {
     q: "Er dette relevant for solo-konsulenter, ikke bare byrå?",
@@ -1050,7 +1049,7 @@ function PricingCard(t: {
       ) : null}
       {t.name === "Pro Leads" ? (
         <p className="mt-3 text-center text-xs text-white/50">
-          3–5 leads/mnd garantert · refund hvis ikke
+          Ingen binding · Si opp når som helst
         </p>
       ) : null}
     </div>
