@@ -321,8 +321,8 @@ export default async function PlatformLanding() {
               <strong className="text-[#1a1c1a]">
                 Kun 3–5 byrå per lead.
               </strong>{" "}
-              Ingen spam-konkurranse som på Mittanbud. Vi holder listen kort —
-              kundene får skarpe tilbud, dere får høy win-rate.
+              Ingen spam-konkurranse med 20 byråer på samme jobb. Vi holder
+              listen kort — kundene får skarpe tilbud, dere får høy win-rate.
             </div>
           </div>
         </section>
