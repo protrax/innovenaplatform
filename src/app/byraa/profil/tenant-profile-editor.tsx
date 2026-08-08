@@ -15,6 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Check,
+  Copy,
   Eye,
   EyeOff,
   Image as ImageIcon,
@@ -387,7 +389,98 @@ export function TenantProfileEditor({
           )}
         </CardContent>
       </Card>
+
+      {/* Kvalitetsmerke */}
+      <BadgeEmbedCard tenant={t} />
     </div>
+  );
+}
+
+function BadgeEmbedCard({ tenant }: { tenant: Tenant }) {
+  const [copied, setCopied] = useState(false);
+
+  const profileUrl = `https://www.innovena.no/byraer/${tenant.slug}/`;
+  const badgeUrl =
+    "https://www.innovena.no/badge/kvalitetssikret-av-innovena.svg";
+  const embedCode = `<a href="${profileUrl}" title="Kvalitetssikret av Innovena">
+  <img src="${badgeUrl}" alt="Kvalitetssikret av Innovena" width="280" height="84" loading="lazy" />
+</a>`;
+
+  async function copyEmbed() {
+    try {
+      await navigator.clipboard.writeText(embedCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Eldre nettlesere uten clipboard-API: brukeren kan markere teksten selv
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Kvalitetsmerket «Kvalitetssikret av Innovena»</CardTitle>
+        <CardDescription>
+          Vis kundene deres at dere er et gjennomgått og godkjent medlem. Lim
+          inn koden på nettstedet deres — merket lenker til profilsiden deres
+          på innovena.no.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {tenant.status !== "active" ? (
+          <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            Merket blir tilgjengelig når byrået er godkjent og aktivt.
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-start gap-6">
+              <a
+                href={profileUrl}
+                target="_blank"
+                rel="noopener"
+                className="shrink-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={badgeUrl}
+                  alt="Kvalitetssikret av Innovena"
+                  width={280}
+                  height={84}
+                />
+              </a>
+              <div className="min-w-0 flex-1 space-y-2">
+                <Label>Embed-kode</Label>
+                <pre className="overflow-x-auto rounded-md border border-border bg-accent/50 p-3 text-xs leading-relaxed">
+                  {embedCode}
+                </pre>
+                <Button variant="outline" size="sm" onClick={copyEmbed}>
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4" /> Kopiert!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" /> Kopier koden
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Profilsiden deres:{" "}
+              <a
+                href={profileUrl}
+                target="_blank"
+                rel="noopener"
+                className="underline underline-offset-2"
+              >
+                {profileUrl}
+              </a>
+            </p>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
