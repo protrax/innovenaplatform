@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/send";
+import { prioritizeTenants } from "@/lib/lead-distribution";
 
 const Body = z.object({
   title: z.string().min(3).max(200),
@@ -100,8 +101,8 @@ async function distributeLeadsInBackground(
   // Deduplicate tenants
   const tenantIds = Array.from(new Set(active.map((r) => r.tenant_id)));
 
-  // Hard cap: max 5 tenants per lead (will read from category config in a later phase)
-  const selected = tenantIds.slice(0, 5);
+  // Max 5 tenants per lead, Elite foran Pro foran gratis
+  const selected = await prioritizeTenants(tenantIds);
 
   if (selected.length === 0) return;
 

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/send";
 import { clientEnv } from "@/lib/env";
+import { prioritizeTenants } from "@/lib/lead-distribution";
 
 export const runtime = "nodejs";
 
@@ -156,7 +157,9 @@ export async function POST(request: Request) {
       .in("category_id", categoryIds);
     // @ts-expect-error — joined
     const active = (matchingTenants ?? []).filter((r) => r.tenants?.status === "active");
-    const tenantIds = Array.from(new Set(active.map((r) => r.tenant_id))).slice(0, 5);
+    const tenantIds = await prioritizeTenants(
+      Array.from(new Set(active.map((r) => r.tenant_id))),
+    );
     if (tenantIds.length > 0) {
       await admin.from("project_leads").insert(
         tenantIds.map((tenant_id) => ({

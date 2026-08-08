@@ -80,10 +80,9 @@ const TIERS = [
     features: [
       "Alt i Gratis, pluss:",
       "Garantert 3–5 leads/mnd",
-      "Prioritert matching",
-      "Featured i 2 kategorier",
+      "Prioritert matching foran gratis-byråer",
       "Varsling i sanntid",
-      "4 % platformgebyr på vunne deals",
+      "2,5 % plattformgebyr på betalinger via plattformen",
     ],
     notIncluded: [],
     cta: "Kom i gang",
@@ -99,9 +98,9 @@ const TIERS = [
     features: [
       "Alt i Pro, pluss:",
       "Garantert 10–15 leads/mnd",
-      "Top-prioritet — alltid blant de 3–5 matchede byråene",
-      "2 timer tidlig tilgang før øvrige byrå",
-      "2,5 % platformgebyr på vunne deals",
+      "Topprioritet — Elite matches alltid først",
+      "Ubegrenset antall teammedlemmer",
+      "2,5 % plattformgebyr på betalinger via plattformen",
       "Dedikert Customer Success",
     ],
     notIncluded: [],
@@ -125,11 +124,11 @@ const FAQ_ITEMS = [
   },
   {
     q: "Hvordan kvalifiserer dere leadsene?",
-    a: "Kunder går gjennom en 5-stegs AI-wizard. Budsjett, omfang, tidslinje og bransje valideres. Vi har verifisert e-post, telefonnummer og nettside før leadet går ut. Under 8 % avvises som uegnede.",
+    a: "Kunder går gjennom en 5-stegs AI-wizard. Budsjett, omfang, tidslinje og bransje valideres. Kontaktinfo og prosjektbeskrivelse valideres av AI-en før leadet går ut, og useriøse forespørsler filtreres bort.",
   },
   {
     q: "Hva får jeg ekstra med Elite?",
-    a: "Top-prioritet i matching — du er alltid blant de 3–5 byråene som får se leadet (gitt at kategori, lokasjon og kapasitet stemmer). Du ser også leadet 2 timer før øvrige byrå, så du rekker å forberede et skarpere tilbud. Begrenset antall Elite-plasser per kategori — første mann til mølla.",
+    a: "Topprioritet i matching — Elite-byråer fylles alltid først inn blant de 3–5 som får leadet (gitt at kategori og kapasitet stemmer), foran Pro- og gratis-byråer. I tillegg dobbel lead-garanti (10–15/mnd), ubegrenset antall teammedlemmer og dedikert Customer Success.",
   },
   {
     q: "Er dette relevant for solo-konsulenter, ikke bare byrå?",
@@ -137,7 +136,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Hva er platformgebyret på?",
-    a: "Kun på deals som stammer fra leads vi har levert til deg via innovena.no. 4 % på Pro, 2,5 % på Elite. Faktureres når kunden har betalt. Ingen gebyr på egne leads (via webhook eller direkte kontakt).",
+    a: "2,5 % på betalinger som går gjennom plattformens fakturaflyt — trekkes automatisk når kunden betaler. Ingen gebyr på egne leads (via webhook eller direkte kontakt) som du fakturerer utenfor plattformen.",
   },
   {
     q: "Er dataene våre trygge?",
@@ -162,7 +161,6 @@ export default async function PlatformLanding() {
               className="flex items-center gap-2 text-base font-semibold tracking-tight text-[#1a1c1a]"
             >
               <Logo />
-              Innovena
             </Link>
             <nav className="hidden items-center gap-8 text-sm text-[#1a1c1a]/70 md:flex">
               <Link href="#plattform" className="hover:text-[#1a1c1a]">
@@ -307,7 +305,7 @@ export default async function PlatformLanding() {
                 n="02"
                 icon={Target}
                 title="Vi matcher dere"
-                body="AI validerer og matcher mot dine kategorier, lokasjon og kapasitet. Under 8 % avvises."
+                body="AI validerer og matcher mot dine kategorier, lokasjon og kapasitet. Useriøse forespørsler filtreres bort."
                 highlight
               />
               <FlowArrow />
@@ -779,7 +777,6 @@ export default async function PlatformLanding() {
                   className="flex items-center gap-2 text-base font-semibold text-[#1a1c1a]"
                 >
                   <Logo />
-                  Innovena
                 </Link>
                 <p className="mt-4 max-w-sm text-sm leading-relaxed text-[#6b6d68]">
                   Kvalifiserte leads for moderne norske byrå. Vi driver
@@ -832,9 +829,11 @@ export default async function PlatformLanding() {
 
 function Logo() {
   return (
-    <span
-      className="inline-block h-5 w-5 rounded-md bg-gradient-to-br from-[#dfff00] to-[#576500]"
-      aria-hidden
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/innovena-logo.png"
+      alt="Innovena"
+      className="h-[26px] w-auto object-contain brightness-0"
     />
   );
 }
