@@ -1,9 +1,22 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { serverEnv } from "@/lib/env";
 
-// Prioritert matching, som lovet på landingssiden: byråer med aktivt
-// Elite-abonnement går foran Pro Leads, som går foran gratis-byråer.
-// Stabil sort — innenfor samme nivå beholdes kategori-match-rekkefølgen.
+/**
+ * Hvor mange av plassene på én forespørsel gratis-byråer maks kan ta når det
+ * finnes betalende byråer i kategorien. Uten et slikt tak fylte gratis-byråene
+ * de ledige plassene og fikk i praksis hvert eneste lead, siden vi sjelden har
+ * fem betalende i samme kategori — og da var det ingen grunn til å betale.
+ * Taket gir gratis-byråer smaken, ikke driftsgrunnlaget.
+ */
+const MAX_FREE_RECIPIENTS = 2;
+
+/** Vindu for rettferdighetsrotasjonen blant gratis-byråer. */
+const FAIRNESS_WINDOW_DAYS = 30;
+
+/**
+ * Prioritert matching: Elite går foran Pro Leads, som går foran gratis-byråer.
+ * Stabil sort — innenfor samme nivå beholdes kategori-match-rekkefølgen.
+ */
 export async function prioritizeTenants(
   tenantIds: string[],
   limit = 5,
@@ -24,7 +37,51 @@ export async function prioritizeTenants(
     rank.set(s.tenant_id, Math.min(r, rank.get(s.tenant_id) ?? 2));
   }
 
-  return [...tenantIds]
-    .sort((a, b) => (rank.get(a) ?? 2) - (rank.get(b) ?? 2))
-    .slice(0, limit);
+  const paying = tenantIds
+    .filter((id) => rank.has(id))
+    .sort((a, b) => rank.get(a)! - rank.get(b)!);
+  const free = tenantIds.filter((id) => !rank.has(id));
+
+  // Ingen betalende byrå i denne kategorien: da finnes det ingen inntekt å
+  // beskytte, og kunden skal fortsatt få de tilbudene vi lover. Fyll opp.
+  if (paying.length === 0) {
+    return (await rotateFree(admin, free)).slice(0, limit);
+  }
+
+  const chosen = paying.slice(0, limit);
+  const freeSlots = Math.min(MAX_FREE_RECIPIENTS, limit - chosen.length);
+  if (freeSlots > 0 && free.length > 0) {
+    chosen.push(...(await rotateFree(admin, free)).slice(0, freeSlots));
+  }
+  return chosen;
+}
+
+/**
+ * Uten rotasjon ville de samme gratis-byråene tatt plassene hver gang, fordi
+ * sorten er stabil på kategori-match. Resten hadde aldri sett et lead og
+ * sluttet. Færrest mottatte leads i vinduet går først.
+ */
+async function rotateFree(
+  admin: ReturnType<typeof createAdminClient>,
+  free: string[],
+): Promise<string[]> {
+  if (free.length <= 1) return free;
+
+  const since = new Date(
+    Date.now() - FAIRNESS_WINDOW_DAYS * 24 * 60 * 60 * 1000,
+  ).toISOString();
+  const { data } = await admin
+    .from("project_leads")
+    .select("tenant_id")
+    .in("tenant_id", free)
+    .gte("distributed_at", since);
+
+  const received = new Map<string, number>();
+  for (const row of data ?? []) {
+    received.set(row.tenant_id, (received.get(row.tenant_id) ?? 0) + 1);
+  }
+
+  return [...free].sort(
+    (a, b) => (received.get(a) ?? 0) - (received.get(b) ?? 0),
+  );
 }

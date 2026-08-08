@@ -64,9 +64,10 @@ const TIERS = [
       "Kontrakt & e-signering",
       "Profil i marketplace",
       "Webhook for egne leads",
+      "Kan motta leads på ledige plasser",
     ],
     notIncluded: [
-      "Automatiske matchende leads fra innovena.no",
+      "Prioritet — gratis tar maks 2 av 5 plasser når betalende byrå matcher",
     ],
     cta: "Opprett gratis konto",
     href: "/registrer?rolle=byraa",
@@ -80,6 +81,7 @@ const TIERS = [
     features: [
       "Alt i Gratis, pluss:",
       "Prioritert matching foran gratis-byråer",
+      "Fyller plassene før gratis slipper til",
       "Maks 5 byrå får samme forespørsel",
       "Varsling i sanntid",
       "2,5 % plattformgebyr på betalinger via plattformen",
@@ -111,7 +113,7 @@ const TIERS = [
 const FAQ_ITEMS = [
   {
     q: "Er CRM-et virkelig gratis?",
-    a: "Ja. Pipeline, AI-tilbudsskriver, prosjektstyring, timekontroll og kontrakter er gratis for alltid — for både solo-konsulenter og team. Ingen kortinformasjon, ingen skjulte gebyrer. Gratis-planen gir ikke automatiske matchende leads fra innovena.no — det er Pro- og Elite-planen.",
+    a: "Ja. Pipeline, AI-tilbudsskriver, prosjektstyring, timekontroll og kontrakter er gratis for alltid — for både solo-konsulenter og team. Ingen kortinformasjon, ingen skjulte gebyrer. Gratis-planen kan også motta leads, men uten prioritet: når betalende byrå matcher samme forespørsel, fyller de plassene først, og gratis-byrå tar maks to av de fem. Matcher ingen betalende, går alle plassene til gratis-byråene.",
   },
   {
     q: "Hvor kommer leadsene fra?",
@@ -119,7 +121,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Hvor mange leads kan jeg regne med?",
-    a: "Vi lover ikke et antall, og du bør være skeptisk til enhver lead-leverandør som gjør det — volumet avhenger av hvilke kategorier du dekker, hvor i landet du er, og hvor mange forespørsler som faktisk kommer inn den måneden. Det vi kan love er hvordan fordelingen fungerer: maks 5 byrå får samme forespørsel, og Pro-byrå matches foran gratis-byrå. Start gratis, se hvilket volum som treffer dine kategorier, og oppgrader først når du vet at det lønner seg.",
+    a: "Vi lover ikke et antall, og du bør være skeptisk til enhver lead-leverandør som gjør det — volumet avhenger av hvilke kategorier du dekker, hvor i landet du er, og hvor mange forespørsler som faktisk kommer inn den måneden. Det vi kan love er hvordan fordelingen fungerer: maks 5 byrå får samme forespørsel, betalende byrå fyller plassene først, og gratis-byrå tar maks to av dem. Start gratis, se hvilket volum som treffer dine kategorier, og oppgrader først når du vet at det lønner seg.",
   },
   {
     q: "Hvordan kvalifiserer dere leadsene?",
