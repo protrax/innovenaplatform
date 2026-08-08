@@ -34,6 +34,17 @@ export default async function SignUpPage({
             Logg inn
           </Link>
         </p>
+        <p className="rounded-md border border-[#1a1c1a]/10 bg-[#f4f4f0] p-3 text-center text-sm text-[#6b6d68]">
+          Skal du <strong className="text-[#1a1c1a]">ha et prosjekt gjort</strong>?
+          Du trenger ikke opprette konto —{" "}
+          <Link
+            href="/lag-forespoersel"
+            className="font-semibold text-[#576500] underline-offset-4 hover:underline"
+          >
+            beskriv prosjektet her
+          </Link>{" "}
+          så får du tilbud fra kvalitetssikrede byråer.
+        </p>
       </div>
     </div>
   );

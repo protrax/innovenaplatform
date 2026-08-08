@@ -13,13 +13,23 @@ export default function SignInPage() {
       <div className="mt-8 space-y-6">
         <SignInForm />
         <p className="text-center text-sm text-[#6b6d68]">
-          Har du ikke konto?{" "}
+          Er du byrå eller konsulent uten konto?{" "}
           <Link
             href="/registrer?rolle=byraa"
             className="font-semibold text-[#576500] underline-offset-4 hover:underline"
           >
             Opprett gratis
           </Link>
+        </p>
+        <p className="rounded-md border border-[#1a1c1a]/10 bg-[#f4f4f0] p-3 text-center text-sm text-[#6b6d68]">
+          Skal du <strong className="text-[#1a1c1a]">ha et prosjekt gjort</strong>?{" "}
+          <Link
+            href="/lag-forespoersel"
+            className="font-semibold text-[#576500] underline-offset-4 hover:underline"
+          >
+            Beskriv prosjektet her
+          </Link>{" "}
+          — du får automatisk konto og innloggingslenke på e-post.
         </p>
       </div>
     </div>

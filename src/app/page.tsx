@@ -178,6 +178,12 @@ export default async function PlatformLanding() {
             </nav>
             <div className="flex items-center gap-2">
               <Link
+                href="/lag-forespoersel"
+                className="hidden text-sm font-medium text-[#576500] hover:text-[#1a1c1a] lg:inline-flex lg:px-3 lg:py-2"
+              >
+                Skal du ha et prosjekt gjort?
+              </Link>
+              <Link
                 href="/logg-inn"
                 className="hidden text-sm text-[#1a1c1a]/70 hover:text-[#1a1c1a] md:inline-flex md:px-3 md:py-2"
               >
@@ -250,6 +256,15 @@ export default async function PlatformLanding() {
             </div>
             <p className="mt-4 text-xs text-[#6b6d68]">
               Ingen kort · Gratis for alltid · Lead-abonnement fra 2 990 kr/mnd
+            </p>
+            <p className="mt-6 text-sm text-[#6b6d68]">
+              Er du bedrift og skal ha et prosjekt gjort?{" "}
+              <Link
+                href="/lag-forespoersel"
+                className="font-semibold text-[#576500] underline-offset-4 hover:underline"
+              >
+                Beskriv prosjektet og få tilbud her →
+              </Link>
             </p>
           </div>
 
