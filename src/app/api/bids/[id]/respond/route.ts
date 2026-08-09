@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -212,24 +213,28 @@ export async function POST(
     }
   }
 
-  // Fire-and-forget: generate an AI project plan so the workspace is
-  // populated with tasks the moment the customer opens it.
-  void generateAndSaveProjectPlan({
-    projectId: project.id,
-    tenantId: bid.tenant_id,
-    customerId: user.id,
-    createdById: user.id,
-    input: {
-      projectTitle: project.title,
-      projectDescription: project.description,
-      tenantName: tenant?.name ?? "Byrå",
-      amountNok: bid.amount_nok,
-      deliveryWeeks: bid.delivery_weeks,
-      bidSummary: bid.summary ?? "",
-      bidDescription: bid.description,
-      bidIncludes: bid.includes ?? [],
-    },
-  }).catch((err) => console.error("[respond] project plan failed:", err));
+  // Kjører etter at svaret er sendt, men må få fullføre. Et AI-kall tar flere
+  // sekunder, og uten waitUntil rekker Vercel å suspendere instansen først —
+  // da aksepteres tilbudet, men arbeidsrommet står tomt uten at noen forstår
+  // hvorfor. Samme felle som e-post og lead-fordeling.
+  waitUntil(
+    generateAndSaveProjectPlan({
+      projectId: project.id,
+      tenantId: bid.tenant_id,
+      customerId: user.id,
+      createdById: user.id,
+      input: {
+        projectTitle: project.title,
+        projectDescription: project.description,
+        tenantName: tenant?.name ?? "Byrå",
+        amountNok: bid.amount_nok,
+        deliveryWeeks: bid.delivery_weeks,
+        bidSummary: bid.summary ?? "",
+        bidDescription: bid.description,
+        bidIncludes: bid.includes ?? [],
+      },
+    }).catch((err) => console.error("[respond] project plan failed:", err)),
+  );
 
   // Email winning tenant
   queueEmail({
