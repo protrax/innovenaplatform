@@ -13,6 +13,34 @@ const MAX_FREE_RECIPIENTS = 2;
 /** Vindu for rettferdighetsrotasjonen blant gratis-byråer. */
 const FAIRNESS_WINDOW_DAYS = 30;
 
+/** Fallback når kategorien ikke sier noe annet. */
+const DEFAULT_MAX_RECIPIENTS = 5;
+
+/**
+ * Slår opp taket for en forespørsel. `service_categories.max_agencies_per_lead`
+ * har ligget i skjemaet siden starten og vises i admin, men ble aldri lest —
+ * fordelingen brukte alltid hardkodet 5. Treffer forespørselen flere
+ * kategorier, gjelder det strengeste taket, ellers ville en kategori med lavt
+ * tak kunne omgås ved å hake av en ekstra kategori.
+ */
+export async function maxRecipientsForCategories(
+  categoryIds: string[],
+): Promise<number> {
+  if (categoryIds.length === 0) return DEFAULT_MAX_RECIPIENTS;
+
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("service_categories")
+    .select("max_agencies_per_lead")
+    .in("id", categoryIds);
+
+  const caps = (data ?? [])
+    .map((c) => c.max_agencies_per_lead)
+    .filter((n): n is number => typeof n === "number" && n > 0);
+
+  return caps.length > 0 ? Math.min(...caps) : DEFAULT_MAX_RECIPIENTS;
+}
+
 /**
  * Prioritert matching: Elite går foran Pro Leads, som går foran gratis-byråer.
  * Stabil sort — innenfor samme nivå beholdes kategori-match-rekkefølgen.

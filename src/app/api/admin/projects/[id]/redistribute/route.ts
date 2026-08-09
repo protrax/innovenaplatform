@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { prioritizeTenants } from "@/lib/lead-distribution";
+import {
+  prioritizeTenants,
+  maxRecipientsForCategories,
+} from "@/lib/lead-distribution";
 import { queueEmail } from "@/lib/email/send";
 import { requireAdmin } from "../../admin-guard";
 
@@ -80,7 +83,8 @@ export async function POST(
     });
   }
 
-  const tenantIds = await prioritizeTenants(candidates);
+  const limit = await maxRecipientsForCategories(categoryIds);
+  const tenantIds = await prioritizeTenants(candidates, limit);
 
   await admin
     .from("project_leads")

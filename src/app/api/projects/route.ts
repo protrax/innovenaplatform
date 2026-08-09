@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { queueEmail } from "@/lib/email/send";
-import { prioritizeTenants } from "@/lib/lead-distribution";
+import {
+  prioritizeTenants,
+  maxRecipientsForCategories,
+} from "@/lib/lead-distribution";
 
 const Body = z.object({
   title: z.string().min(3).max(200),
@@ -65,10 +69,15 @@ export async function POST(request: Request) {
       );
   }
 
-  // Fire-and-forget lead distribution (admin client bypasses RLS for cross-tenant writes)
-  distributeLeadsInBackground(project.id, category_ids).catch((err) => {
-    console.error("lead distribution failed", err);
-  });
+  // Fordelingen kjører etter at svaret er sendt, men MÅ få lov til å fullføre.
+  // Uten waitUntil kan Vercel suspendere instansen når ruta returnerer, og da
+  // opprettes prosjektet uten at noe byrå får det — forespørselen blir liggende
+  // som «Ikke distribuert» uten spor av hvorfor. Samme felle som e-postene.
+  waitUntil(
+    distributeLeadsInBackground(project.id, category_ids).catch((err) => {
+      console.error("lead distribution failed", err);
+    }),
+  );
 
   // Confirmation email to the customer that their brief is out there.
   queueEmail({
@@ -101,8 +110,9 @@ async function distributeLeadsInBackground(
   // Deduplicate tenants
   const tenantIds = Array.from(new Set(active.map((r) => r.tenant_id)));
 
-  // Max 5 tenants per lead, Elite foran Pro foran gratis
-  const selected = await prioritizeTenants(tenantIds);
+  // Taket kommer fra kategorien (strengeste ved flere), Elite foran Pro foran gratis
+  const limit = await maxRecipientsForCategories(categoryIds);
+  const selected = await prioritizeTenants(tenantIds, limit);
 
   if (selected.length === 0) return;
 

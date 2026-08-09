@@ -3,7 +3,10 @@ import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { queueEmail } from "@/lib/email/send";
 import { clientEnv } from "@/lib/env";
-import { prioritizeTenants } from "@/lib/lead-distribution";
+import {
+  prioritizeTenants,
+  maxRecipientsForCategories,
+} from "@/lib/lead-distribution";
 
 export const runtime = "nodejs";
 
@@ -157,8 +160,10 @@ export async function POST(request: Request) {
       .in("category_id", categoryIds);
     // @ts-expect-error — joined
     const active = (matchingTenants ?? []).filter((r) => r.tenants?.status === "active");
+    const limit = await maxRecipientsForCategories(categoryIds);
     const tenantIds = await prioritizeTenants(
       Array.from(new Set(active.map((r) => r.tenant_id))),
+      limit,
     );
     if (tenantIds.length > 0) {
       await admin.from("project_leads").insert(
