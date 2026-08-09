@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
+import { LeadActions } from "./lead-actions";
 
 const STATUS_LABELS: Record<string, string> = {
   draft: "Utkast",
@@ -156,6 +157,11 @@ export default async function AdminLeadsPage() {
                       </div>
                     </div>
                   ) : null}
+                  <LeadActions
+                    projectId={p.id}
+                    title={p.title}
+                    distributedCount={leads.length}
+                  />
                 </CardContent>
               </Card>
             );
