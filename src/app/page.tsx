@@ -100,7 +100,7 @@ const TIERS = [
     features: [
       "Alt i Pro, pluss:",
       "Topprioritet — Elite matches alltid først",
-      "Ubegrenset antall teammedlemmer",
+      "Dedikert kontaktperson ved oppstart",
       "2,5 % plattformgebyr på betalinger via plattformen",
       "Dedikert Customer Success",
     ],
@@ -129,7 +129,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Hva får jeg ekstra med Elite?",
-    a: "Topprioritet i matching — Elite-byråer fylles alltid først inn blant de maks 5 som får leadet (gitt at kategori og kapasitet stemmer), foran Pro- og gratis-byråer. I tillegg ubegrenset antall teammedlemmer og dedikert Customer Success.",
+    a: "Topprioritet i matching — Elite-byråer fylles alltid først inn blant de maks 5 som får leadet (gitt at kategori og kapasitet stemmer), foran Pro- og gratis-byråer. I tillegg dedikert kontaktperson ved oppstart og dedikert Customer Success.",
   },
   {
     q: "Er dette relevant for solo-konsulenter, ikke bare byrå?",
