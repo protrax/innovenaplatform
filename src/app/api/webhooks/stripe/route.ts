@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { serverEnv } from "@/lib/env";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
             "Byrå";
 
           // Notify tenant
-          void sendEmail({
+          queueEmail({
             type: "invoice_paid",
             to_tenant_id: invoice.tenant_id,
             customer_name: customer?.full_name ?? customer?.email ?? "Kunde",
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
           });
 
           // Receipt to customer
-          void sendEmail({
+          queueEmail({
             type: "payment_receipt",
             to_user_id: invoice.customer_id,
             tenant_name: tenantName,
@@ -149,13 +149,13 @@ export async function POST(request: Request) {
             .maybeSingle();
           const tenantName = tenant?.name ?? "Byrå";
           if (subscription.status === "active") {
-            void sendEmail({
+            queueEmail({
               type: "subscription_activated",
               to_tenant_id: tenantId,
               tenant_name: tenantName,
             });
           } else if (subscription.status === "past_due") {
-            void sendEmail({
+            queueEmail({
               type: "subscription_past_due",
               to_tenant_id: tenantId,
               tenant_name: tenantName,
@@ -182,7 +182,7 @@ export async function POST(request: Request) {
           .select("name")
           .eq("id", tenantId)
           .maybeSingle();
-        void sendEmail({
+        queueEmail({
           type: "subscription_canceled",
           to_tenant_id: tenantId,
           tenant_name: tenant?.name ?? "Byrå",

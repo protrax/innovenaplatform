@@ -1,3 +1,4 @@
+import { waitUntil } from "@vercel/functions";
 import { getResend, getFromEmail, isEmailConfigured } from "./client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -263,4 +264,18 @@ export async function sendEmail(event: EmailEvent): Promise<void> {
   } catch (err) {
     console.error(`[email] Failed to send ${event.type}:`, err);
   }
+}
+
+/**
+ * Send uten å blokkere HTTP-svaret.
+ *
+ * `void sendEmail(...)` er ikke trygt på Vercel: når ruta returnerer kan
+ * runtime suspendere instansen før promiset er ferdig, og e-posten forsvinner
+ * uten spor i loggen. Det var årsaken til at kunder ikke fikk
+ * innloggingslenken sin, og at byråer gikk glipp av lead-varsler.
+ *
+ * waitUntil holder funksjonen i live til sendingen faktisk er fullført.
+ */
+export function queueEmail(event: EmailEvent): void {
+  waitUntil(sendEmail(event));
 }

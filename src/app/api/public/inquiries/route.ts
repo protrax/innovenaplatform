@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 import { clientEnv } from "@/lib/env";
 import { prioritizeTenants } from "@/lib/lead-distribution";
 
@@ -184,7 +184,7 @@ export async function POST(request: Request) {
         }
       }
       for (const tenant_id of tenantIds) {
-        void sendEmail({
+        queueEmail({
           type: "new_lead",
           to_tenant_id: tenant_id,
           project_title: project.title,
@@ -214,7 +214,7 @@ export async function POST(request: Request) {
   if (linkError) {
     console.error("[inquiries] generateLink failed:", linkError);
   } else if (linkData?.properties?.action_link) {
-    void sendEmail({
+    queueEmail({
       type: "magic_link",
       to_email: customer.email,
       project_title: project.title,
@@ -223,7 +223,7 @@ export async function POST(request: Request) {
   }
 
   // Project-received confirmation (in addition to the magic-link login).
-  void sendEmail({
+  queueEmail({
     type: "project_received",
     to_user_id: userId,
     project_title: project.title,

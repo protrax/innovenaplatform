@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 const Body = z.object({
   tenant_id: z.string().uuid(),
@@ -49,19 +49,19 @@ export async function POST(request: Request) {
   // Email the tenant owners on status transitions that matter.
   if (prevTenant?.name && prevTenant.status !== status) {
     if (status === "active") {
-      void sendEmail({
+      queueEmail({
         type: "tenant_approved",
         to_tenant_id: tenant_id,
         tenant_name: prevTenant.name,
       });
     } else if (status === "rejected") {
-      void sendEmail({
+      queueEmail({
         type: "tenant_rejected",
         to_tenant_id: tenant_id,
         tenant_name: prevTenant.name,
       });
     } else if (status === "suspended") {
-      void sendEmail({
+      queueEmail({
         type: "tenant_suspended",
         to_tenant_id: tenant_id,
         tenant_name: prevTenant.name,

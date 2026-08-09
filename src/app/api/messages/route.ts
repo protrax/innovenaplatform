@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 import { clientEnv } from "@/lib/env";
 
 export const runtime = "nodejs";
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
       : `${appUrl}/kunde/prosjekter/${projectId}`;
 
   if (isCustomerSender && tenantId) {
-    void sendEmail({
+    queueEmail({
       type: "new_message",
       to_tenant_id: tenantId,
       from_name: fromName,
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
       thread_url: threadUrl,
     });
   } else if (!isCustomerSender) {
-    void sendEmail({
+    queueEmail({
       type: "new_message",
       to_user_id: customerId,
       from_name: fromName,

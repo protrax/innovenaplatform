@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildContractBody } from "@/lib/contracts";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 import { generateAndSaveProjectPlan } from "@/lib/project-plan";
 
 export const runtime = "nodejs";
@@ -85,7 +85,7 @@ export async function POST(
         .eq("tenant_id", bid.tenant_id)
         .eq("project_id", project.id);
     }
-    void sendEmail({
+    queueEmail({
       type: "bid_rejected",
       to_tenant_id: bid.tenant_id,
       project_title: project.title,
@@ -232,7 +232,7 @@ export async function POST(
   }).catch((err) => console.error("[respond] project plan failed:", err));
 
   // Email winning tenant
-  void sendEmail({
+  queueEmail({
     type: "bid_accepted",
     to_tenant_id: bid.tenant_id,
     project_title: project.title,
@@ -243,7 +243,7 @@ export async function POST(
 
   // Email losing tenants
   for (const lb of losingBids ?? []) {
-    void sendEmail({
+    queueEmail({
       type: "bid_rejected",
       to_tenant_id: lb.tenant_id,
       project_title: project.title,

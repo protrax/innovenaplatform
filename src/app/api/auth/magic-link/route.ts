@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { clientEnv } from "@/lib/env";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const actionLink = linkData?.properties?.action_link;
     if (!actionLink) return NextResponse.json({ ok: true });
 
-    void sendEmail({
+    queueEmail({
       type: "magic_link",
       to_email: email,
       action_link: actionLink,

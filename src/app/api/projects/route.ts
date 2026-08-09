@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 import { prioritizeTenants } from "@/lib/lead-distribution";
 
 const Body = z.object({
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   });
 
   // Confirmation email to the customer that their brief is out there.
-  void sendEmail({
+  queueEmail({
     type: "project_received",
     to_user_id: user.id,
     project_title: title,
@@ -139,7 +139,7 @@ async function distributeLeadsInBackground(
     .maybeSingle();
   if (project) {
     for (const tenant_id of selected) {
-      void sendEmail({
+      queueEmail({
         type: "new_lead",
         to_tenant_id: tenant_id,
         project_title: project.title,

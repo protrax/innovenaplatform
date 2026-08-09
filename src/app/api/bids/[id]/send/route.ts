@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -56,7 +56,7 @@ export async function POST(
       customer_id: string;
     };
     const tenant = fullBid.tenants as unknown as { name: string };
-    void sendEmail({
+    queueEmail({
       type: "new_bid",
       to_user_id: project.customer_id,
       project_title: project.title,

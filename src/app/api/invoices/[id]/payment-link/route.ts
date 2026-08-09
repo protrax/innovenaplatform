@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createInvoicePaymentLink } from "@/lib/stripe/payments";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -68,7 +68,7 @@ export async function POST(
     // Email the customer
     const tenantName =
       (invoice.tenants as unknown as { name: string } | null)?.name ?? "Byrå";
-    void sendEmail({
+    queueEmail({
       type: "invoice_sent",
       to_user_id: invoice.customer_id,
       tenant_name: tenantName,

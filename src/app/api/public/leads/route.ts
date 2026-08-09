@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     );
   }
 
-  void sendEmail({
+  queueEmail({
     type: "new_contact_webhook",
     to_tenant_id: tenant.id,
     contact_name: p.full_name ?? p.email ?? p.phone ?? "Ny kontakt",

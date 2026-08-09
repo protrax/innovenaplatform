@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { clientEnv } from "@/lib/env";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 
 export const runtime = "nodejs";
 
@@ -67,7 +67,7 @@ export async function POST(
   // Actually send it via Resend (generateLink alone does NOT send)
   const actionLink = linkData.properties?.action_link;
   if (actionLink) {
-    void sendEmail({
+    queueEmail({
       type: "magic_link",
       to_email: target.user.email,
       action_link: actionLink,

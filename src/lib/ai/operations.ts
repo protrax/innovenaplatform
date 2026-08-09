@@ -247,7 +247,44 @@ Estimér 2-4 faktorer som kan dra prisen oppover.`,
   if (!response.parsed_output) {
     throw new Error("AI returnerte ingen strukturert respons");
   }
-  return response.parsed_output;
+  return applyBudgetFloor(response.parsed_output, input.categorySlugs);
+}
+
+/**
+ * Absolutt nedre grense per kategori for et byggeprosjekt. Modellen har
+ * estimert 10 000–15 000 for en agentplattform med markedsplass, altså under
+ * hver eneste rad i pristabellen. Et for lavt estimat er dyrere enn et for
+ * høyt: byrået avviser forespørselen som useriøs, og kunden får sjokk når de
+ * ekte tilbudene kommer. Tallene her er bevisst konservative — de skal fange
+ * åpenbart tull, ikke overstyre skjønn.
+ */
+const CATEGORY_MIN_NOK: Record<string, number> = {
+  webutvikling: 40_000,
+  "app-utvikling": 60_000,
+  "ai-losninger": 25_000,
+  nettbutikk: 30_000,
+  nettsider: 8_000,
+  "crm-systemer": 25_000,
+  design: 10_000,
+};
+
+function applyBudgetFloor(
+  estimate: BudgetEstimateOutput,
+  categorySlugs: string[],
+): BudgetEstimateOutput {
+  const floor = Math.max(
+    0,
+    ...categorySlugs.map((slug) => CATEGORY_MIN_NOK[slug] ?? 0),
+  );
+  if (floor === 0 || estimate.min_nok >= floor) return estimate;
+
+  console.warn(
+    `[budget] Estimat under gulv: ${estimate.min_nok} < ${floor} for [${categorySlugs.join(", ")}] — justerer opp`,
+  );
+  const min = floor;
+  // Behold modellens spennbredde der den er fornuftig, ellers gi 2,5x.
+  const max = Math.max(estimate.max_nok, Math.round(min * 2.5));
+  return { ...estimate, min_nok: min, max_nok: max };
 }
 
 export interface BriefInput {
