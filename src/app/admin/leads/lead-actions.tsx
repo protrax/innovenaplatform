@@ -22,6 +22,10 @@ export function LeadActions({
   const router = useRouter();
   const [busy, setBusy] = useState<"redistribute" | "delete" | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  // Bekreftelse i selve knappen. window.confirm() fryser renderen mens den
+  // står åpen, kan ikke styles, og oppfører seg ulikt på tvers av nettlesere —
+  // dårlig i et verktøy admin bruker daglig.
+  const [confirming, setConfirming] = useState(false);
 
   async function redistribute() {
     setBusy("redistribute");
@@ -42,13 +46,7 @@ export function LeadActions({
   }
 
   async function remove() {
-    if (
-      !window.confirm(
-        `Slette «${title}» permanent?\n\nForespørselen og alt som henger på den — fordeling, tilbud og meldinger — forsvinner. Dette kan ikke angres.`,
-      )
-    ) {
-      return;
-    }
+    setConfirming(false);
     setBusy("delete");
     setNote(null);
     try {
@@ -83,20 +81,47 @@ export function LeadActions({
         )}
         {distributedCount > 0 ? "Send til flere byrå" : "Fordel til byrå"}
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={remove}
-        disabled={busy !== null}
-        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-      >
-        {busy === "delete" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
+      {confirming ? (
+        <>
+          <span className="text-xs text-destructive">
+            Slette «{title.slice(0, 40)}
+            {title.length > 40 ? "…" : ""}» permanent? Fordeling, tilbud og
+            meldinger forsvinner.
+          </span>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={remove}
+            disabled={busy !== null}
+          >
+            {busy === "delete" ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
+            Ja, slett
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setConfirming(false)}
+            disabled={busy !== null}
+          >
+            Avbryt
+          </Button>
+        </>
+      ) : (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setConfirming(true)}
+          disabled={busy !== null}
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+        >
           <Trash2 className="h-4 w-4" />
-        )}
-        Slett
-      </Button>
+          Slett
+        </Button>
+      )}
       {note ? (
         <span className="text-xs text-muted-foreground">{note}</span>
       ) : null}
