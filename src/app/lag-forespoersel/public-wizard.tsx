@@ -50,6 +50,30 @@ const CRAWL_MESSAGES = [
 const PUBLIC_STORAGE_KEY = "innovena-public-wizard-v1";
 const TOTAL_STEPS = 5;
 
+/**
+ * Startpunkter som viser bredden i hva vi tar imot. De tre siste finnes fordi
+ * folk som skal leie inn konsulenter — eller byråer som mangler kapasitet på
+ * en sluttkundeleveranse — ellers antar at dette bare er for prosjekter.
+ */
+const NEED_EXAMPLES: { label: string; text: string }[] = [
+  {
+    label: "Et helt prosjekt",
+    text: "Vi trenger en ny nettside med nettbutikk. Dagens løsning er utdatert og fungerer dårlig på mobil. Vi selger til privatkunder i Norge og har rundt 200 produkter.",
+  },
+  {
+    label: "Én konsulent",
+    text: "Vi trenger en senior frontend-utvikler i cirka 3 måneder, 3 dager i uken, til å jobbe sammen med vårt eget team. React og TypeScript. Oppstart så snart som mulig.",
+  },
+  {
+    label: "Flere konsulenter",
+    text: "Vi skal bemanne et prosjektteam i 6 måneder: én backend-utvikler, én frontend-utvikler og en UX-designer på deltid. Helst folk som kan jobbe hos oss noen dager i uken.",
+  },
+  {
+    label: "Ekstra kapasitet",
+    text: "Vi er et byrå som har tatt på oss mer enn vi rekker. Vi trenger noen som kan sette opp én AI-agent for en av våre sluttkunder — vi står for kundedialogen, dere leverer teknisk.",
+  },
+];
+
 interface PublicWizardState extends WizardState {
   customer_email: string;
   customer_full_name: string;
@@ -567,8 +591,8 @@ function Step1({
       <CardHeader>
         <CardTitle>Hva trenger du hjelp med?</CardTitle>
         <CardDescription>
-          Skriv fritt — noen setninger holder. Vi oversetter det til en tydelig
-          forespørsel byråer kan svare på.
+          Skriv fritt — noen setninger holder. Et helt prosjekt, én eller flere
+          konsulenter, eller ekstra kapasitet til noe du allerede har på gang.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -584,6 +608,29 @@ function Step1({
             Ikke overtenk — du kan redigere alt senere.
           </p>
         </div>
+
+        {/* Eksemplene viser at vi tar imot mer enn prosjekter. Uten dem tror
+            den som skal leie inn konsulenter, eller byrået som mangler
+            kapasitet, at de er på feil sted. */}
+        {!state.userInput ? (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">
+              Eller start fra et eksempel:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {NEED_EXAMPLES.map((ex) => (
+                <button
+                  key={ex.label}
+                  type="button"
+                  onClick={() => update("userInput", ex.text)}
+                  className="rounded-md border border-border px-3 py-1.5 text-left text-xs transition-colors hover:border-brand hover:bg-accent"
+                >
+                  {ex.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
         <div className="space-y-2">
           <Label htmlFor="url">Har du en eksisterende nettside? (valgfritt)</Label>
           <Input
@@ -1096,38 +1143,12 @@ function Step5({
   loading: boolean;
   loadingMessage: string;
 }) {
+  // Kontaktfeltene og send-knappen ligger først. Briefen er allerede generert
+  // og godkjent i steg 4 — legger vi den øverst her, møter kunden en vegg av
+  // tekst rett før innsending og faller fra. Den er tilgjengelig for redigering
+  // under, for de som vil finpusse.
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Brief</CardTitle>
-          <CardDescription>
-            Dette er det byråene ser. Rediger fritt før du sender.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="briefTitle">Tittel</Label>
-            <Input
-              id="briefTitle"
-              value={state.briefTitle}
-              onChange={(e) => update("briefTitle", e.target.value)}
-              maxLength={100}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="briefMarkdown">Innhold</Label>
-            <Textarea
-              id="briefMarkdown"
-              rows={14}
-              value={state.briefMarkdown}
-              onChange={(e) => update("briefMarkdown", e.target.value)}
-              className="font-mono text-sm"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       <Card className="border-brand/40">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -1208,6 +1229,37 @@ function Step5({
           </div>
         </CardContent>
       </Card>
+
+      <details className="rounded-md border border-border bg-card">
+        <summary className="cursor-pointer px-6 py-4 text-sm font-medium">
+          Vil du finpusse teksten byråene ser?
+        </summary>
+        <div className="space-y-4 border-t border-border px-6 py-4">
+          <p className="text-xs text-muted-foreground">
+            Dette er briefen vi sender med forespørselen. Den er allerede klar —
+            rediger kun hvis du vil legge til noe.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="briefTitle">Tittel</Label>
+            <Input
+              id="briefTitle"
+              value={state.briefTitle}
+              onChange={(e) => update("briefTitle", e.target.value)}
+              maxLength={100}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="briefMarkdown">Innhold</Label>
+            <Textarea
+              id="briefMarkdown"
+              rows={14}
+              value={state.briefMarkdown}
+              onChange={(e) => update("briefMarkdown", e.target.value)}
+              className="font-mono text-sm"
+            />
+          </div>
+        </div>
+      </details>
     </div>
   );
 }
