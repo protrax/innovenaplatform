@@ -7,7 +7,9 @@ import {
   Building2,
   Inbox,
   Tag,
+  Target,
   Users,
+  CreditCard,
   Settings,
 } from "lucide-react";
 
@@ -37,6 +39,16 @@ export default async function AdminLayout({
           label: "Byråer",
           href: "/admin/byraaer",
           icon: <Building2 className="h-4 w-4" />,
+        },
+        {
+          label: "Dekning",
+          href: "/admin/dekning",
+          icon: <Target className="h-4 w-4" />,
+        },
+        {
+          label: "Abonnementer",
+          href: "/admin/abonnementer",
+          icon: <CreditCard className="h-4 w-4" />,
         },
         {
           label: "Brukere",
