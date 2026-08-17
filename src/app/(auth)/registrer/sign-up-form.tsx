@@ -37,6 +37,7 @@ export function SignUpForm({
   const [fullName, setFullName] = useState("");
   const [org, setOrg] = useState<OrgHit | null>(null);
   const [website, setWebsite] = useState("");
+  const [tagline, setTagline] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,6 +76,7 @@ export function SignUpForm({
             org_number: org?.orgnr ?? null,
             location: org?.location ?? null,
             website: website.trim() || org?.website || null,
+            tagline: tagline.trim() || null,
             category_ids: picked,
           },
           emailRedirectTo: `${window.location.origin}/api/auth/callback`,
@@ -184,6 +186,22 @@ export function SignUpForm({
         />
         <p className="text-xs text-muted-foreground">
           Kundene ser dette på profilen din, og vi bruker det i vurderingen.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="tagline">Én setning om hva dere er best på</Label>
+        <Input
+          id="tagline"
+          required
+          maxLength={140}
+          placeholder="F.eks. Vi bygger nettbutikker som konverterer, for norske nisjemerkevarer."
+          value={tagline}
+          onChange={(e) => setTagline(e.target.value)}
+        />
+        <p className="text-xs text-muted-foreground">
+          Dette er det kundene ser først i katalogen. Uten den står profilen
+          din tom ved siden av dem som har fylt ut.
         </p>
       </div>
 

@@ -36,6 +36,7 @@ export async function finalizeSignupForUser(userId: string): Promise<{
     org_number?: string | null;
     location?: string | null;
     website?: string | null;
+    tagline?: string | null;
     category_ids?: string[];
   };
 
@@ -90,6 +91,7 @@ export async function finalizeSignupForUser(userId: string): Promise<{
       org_number: meta.org_number ?? null,
       location: meta.location ?? null,
       website: meta.website ?? null,
+      tagline: meta.tagline ?? null,
     })
     .select()
     .single();
