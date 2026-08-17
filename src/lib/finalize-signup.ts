@@ -33,6 +33,10 @@ export async function finalizeSignupForUser(userId: string): Promise<{
     role?: "byraa" | "solo";
     company_name?: string;
     full_name?: string;
+    org_number?: string | null;
+    location?: string | null;
+    website?: string | null;
+    category_ids?: string[];
   };
 
   // If no tenant metadata, the user is likely a customer coming via magic-link.
@@ -82,6 +86,10 @@ export async function finalizeSignupForUser(userId: string): Promise<{
       type: meta.role === "byraa" ? "agency" : "solo_consultant",
       status: "pending_approval",
       billing_email: user.email,
+      // Hentet fra Enhetsregisteret ved registrering, ikke skrevet fritt.
+      org_number: meta.org_number ?? null,
+      location: meta.location ?? null,
+      website: meta.website ?? null,
     })
     .select()
     .single();
@@ -92,6 +100,21 @@ export async function finalizeSignupForUser(userId: string): Promise<{
       next: "/velkommen",
       error: `tenant insert: ${tenantError?.message ?? "unknown"}`,
     };
+  }
+
+  // Fagområdene velges ved registrering. Uten dem matches byrået mot
+  // ingenting, og både de og vi lurer på hvorfor det er stille.
+  const categoryIds = (meta.category_ids ?? []).filter(Boolean);
+  if (categoryIds.length > 0) {
+    const { error: catError } = await admin.from("tenant_categories").insert(
+      categoryIds.map((category_id) => ({
+        tenant_id: tenant.id,
+        category_id,
+      })),
+    );
+    if (catError) {
+      console.error("[finalize-signup] tenant_categories insert failed:", catError);
+    }
   }
 
   const { error: memberError } = await admin.from("tenant_members").insert({

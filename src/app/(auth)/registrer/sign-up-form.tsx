@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { OrgLookupField, type OrgHit } from "./org-lookup-field";
+import { CategoryPicker, type PickerCategory } from "./category-picker";
 
 type RoleChoice = "byraa" | "solo";
 
@@ -23,11 +25,19 @@ const ROLES: { value: RoleChoice; title: string; body: string }[] = [
   },
 ];
 
-export function SignUpForm({ initialRole }: { initialRole: RoleChoice }) {
+export function SignUpForm({
+  initialRole,
+  categories,
+}: {
+  initialRole: RoleChoice;
+  categories: PickerCategory[];
+}) {
   const router = useRouter();
   const [role, setRole] = useState<RoleChoice>(initialRole);
   const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const [org, setOrg] = useState<OrgHit | null>(null);
+  const [website, setWebsite] = useState("");
+  const [picked, setPicked] = useState<string[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +48,19 @@ export function SignUpForm({ initialRole }: { initialRole: RoleChoice }) {
     e.preventDefault();
     setError(null);
     setInfo(null);
+
+    // Blokker her, ikke i admin. Registreringer uten foretak eller fagområde
+    // ble stående som tomme skall som ingen kunne vurdere — og som uansett
+    // aldri ville fått en forespørsel.
+    if (!org) {
+      setError("Hent foretaket ditt fra Enhetsregisteret først.");
+      return;
+    }
+    if (picked.length === 0) {
+      setError("Velg minst ett fagområde — ellers matches du ikke mot noe.");
+      return;
+    }
+
     setLoading(true);
     try {
       const supabase = createClient();
@@ -48,7 +71,11 @@ export function SignUpForm({ initialRole }: { initialRole: RoleChoice }) {
           data: {
             full_name: fullName,
             role,
-            company_name: companyName,
+            company_name: org?.name ?? "",
+            org_number: org?.orgnr ?? null,
+            location: org?.location ?? null,
+            website: website.trim() || org?.website || null,
+            category_ids: picked,
           },
           emailRedirectTo: `${window.location.origin}/api/auth/callback`,
         },
@@ -74,7 +101,7 @@ export function SignUpForm({ initialRole }: { initialRole: RoleChoice }) {
       const res = await fetch("/api/auth/finalize-signup", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ role, fullName, companyName }),
+        body: JSON.stringify({ role, fullName, companyName: org?.name ?? "" }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({ error: "Ukjent feil" }));
@@ -136,17 +163,39 @@ export function SignUpForm({ initialRole }: { initialRole: RoleChoice }) {
         />
       </div>
 
+      <OrgLookupField
+        value={org}
+        onResolved={(hit) => {
+          setOrg(hit);
+          if (!website && hit.website) setWebsite(hit.website);
+        }}
+        onCleared={() => setOrg(null)}
+      />
+
       <div className="space-y-2">
-        <Label htmlFor="companyName">
-          {role === "byraa" ? "Selskapsnavn" : "Firmanavn (kan være ditt eget)"}
-        </Label>
+        <Label htmlFor="website">Nettsted</Label>
         <Input
-          id="companyName"
+          id="website"
+          type="url"
           required
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+          placeholder="https://ditt-firma.no"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
         />
+        <p className="text-xs text-muted-foreground">
+          Kundene ser dette på profilen din, og vi bruker det i vurderingen.
+        </p>
       </div>
+
+      <CategoryPicker
+        categories={categories}
+        selected={picked}
+        onToggle={(id) =>
+          setPicked((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+          )
+        }
+      />
 
       <div className="space-y-2">
         <Label htmlFor="email">E-post</Label>

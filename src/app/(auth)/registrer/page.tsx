@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignUpForm } from "./sign-up-form";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type RoleChoice = "byraa" | "solo";
 
@@ -14,6 +15,14 @@ export default async function SignUpPage({
   const raw = params.rolle;
   const rolle: RoleChoice = raw === "solo" ? "solo" : "byraa";
 
+  // Hentes med admin-klienten fordi brukeren ikke er innlogget ennå.
+  const admin = createAdminClient();
+  const { data: categories } = await admin
+    .from("service_categories")
+    .select("id, name")
+    .eq("active", true)
+    .order("sort_order");
+
   return (
     <div>
       <h1 className="text-3xl font-bold tracking-tight text-[#1a1c1a]">
@@ -24,7 +33,7 @@ export default async function SignUpPage({
         vil ha leads levert automatisk.
       </p>
       <div className="mt-8 space-y-6">
-        <SignUpForm initialRole={rolle} />
+        <SignUpForm initialRole={rolle} categories={categories ?? []} />
         <p className="text-center text-sm text-[#6b6d68]">
           Har du konto?{" "}
           <Link
