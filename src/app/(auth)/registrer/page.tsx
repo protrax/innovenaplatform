@@ -66,9 +66,11 @@ export default async function SignUpPage({
           </li>
         </ul>
         <p className="mt-3 text-xs text-[#6b6d68]">
-          I tillegg 2,5 % plattformgebyr på betalinger som går gjennom
-          plattformen. Det er hele prislisten. Ingen bindingstid — du kan falle
-          tilbake til gratis og beholde profil, verktøy og historikk.
+          Velger dere å ta betalt gjennom plattformen, tar vi 2,5 %. Det er
+          frivillig — fakturerer dere kunden direkte, slik dere alltid har
+          gjort, tar vi ingenting. Det er hele prislisten. Ingen bindingstid,
+          og du kan falle tilbake til gratis og beholde profil, verktøy og
+          historikk.
         </p>
       </div>
 
