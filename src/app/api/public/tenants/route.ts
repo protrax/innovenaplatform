@@ -28,9 +28,13 @@ export async function GET(request: Request) {
   let query = admin
     .from("tenants")
     .select(
+      // case_studies er med for at innovena.no skal få case-sidene inn i
+      // sitemapet uten å slå opp hvert byrå enkeltvis. Kun id og tittel —
+      // resten hentes på profil-endepunktet når siden faktisk rendres.
       `id, slug, name, type, logo_url, tagline, description, website, location,
        founded_year, team_size, linkedin_url, instagram_url,
-       tenant_categories:tenant_categories(category_id, service_categories(slug, name))`,
+       tenant_categories:tenant_categories(category_id, service_categories(slug, name)),
+       case_studies:case_studies(id, title, published)`,
       { count: "exact" },
     )
     .eq("status", "active")
@@ -80,6 +84,15 @@ export async function GET(request: Request) {
       categories: cats
         .filter((c) => c.service_categories)
         .map((c) => c.service_categories!),
+      cases: (
+        t.case_studies as unknown as Array<{
+          id: string;
+          title: string;
+          published: boolean;
+        }>
+      )
+        .filter((c) => c.published)
+        .map((c) => ({ id: c.id, title: c.title })),
       profile_url: `/byraaer/${t.slug}`,
     };
   });
