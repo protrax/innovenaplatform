@@ -536,3 +536,48 @@ export function tplNewContactWebhook(input: {
     text: `${input.contact_name} kom inn via ${input.source}. Åpne: ${url}`,
   };
 }
+
+/**
+ * Ber et byrå fullføre profilen før godkjenning.
+ *
+ * Sendes manuelt fra admin når registreringen mangler det vi trenger for å
+ * vurdere dem. Lenken er en engangs innloggingslenke rett til riktig side, så
+ * de slipper å huske passord eller lete i menyen — den vanligste grunnen til
+ * at slike purringer ikke blir fulgt opp.
+ */
+export function tplProfileIncomplete(input: {
+  tenant_name: string;
+  missing: string[];
+  action_link: string;
+}): Template {
+  const items = input.missing
+    .map(
+      (m) =>
+        `<li style="margin-bottom:4px;">${m}</li>`,
+    )
+    .join("");
+  const content = `
+    <h1 style="margin:0 0 8px;font-size:20px;">Vi mangler litt info om ${input.tenant_name}</h1>
+    <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
+      Takk for at dere registrerte dere hos Innovena. Før vi kan godkjenne
+      profilen og sende forespørsler deres vei, trenger vi dette:
+    </p>
+    <ul style="margin:0 0 16px;padding-left:20px;color:#404040;font-size:15px;line-height:1.7;">
+      ${items}
+    </ul>
+    <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
+      Trykk på knappen — da er dere logget inn med én gang, uten passord.
+      Det tar et par minutter.
+    </p>
+    ${button("Fullfør profilen", input.action_link)}
+    <p style="margin:16px 0 0;color:#737373;font-size:13px;line-height:1.5;">
+      Uten fagområder matches dere ikke mot noen forespørsler, så det punktet
+      er det viktigste.
+    </p>
+  `;
+  return {
+    subject: `Fullfør profilen til ${input.tenant_name}`,
+    html: shell(content),
+    text: `Vi mangler litt info om ${input.tenant_name} før vi kan godkjenne dere:\n\n${input.missing.map((m) => `- ${m}`).join("\n")}\n\nFullfør her: ${input.action_link}`,
+  };
+}

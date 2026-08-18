@@ -257,7 +257,11 @@ export default async function AdminByraaerPage() {
                     </Link>
                   ) : null}
 
-                  <TenantStatusActions tenantId={t.id} currentStatus={t.status} />
+                  <TenantStatusActions
+                    tenantId={t.id}
+                    currentStatus={t.status}
+                    incomplete={filled < 5 || cats.length === 0}
+                  />
                 </CardContent>
               </Card>
             );

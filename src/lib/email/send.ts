@@ -12,6 +12,7 @@ import {
   tplNewLead,
   tplNewMessage,
   tplNewTenantPending,
+  tplProfileIncomplete,
   tplPaymentReceipt,
   tplProjectReceived,
   tplSubscriptionActivated,
@@ -78,6 +79,13 @@ export type EmailEvent =
       type: "tenant_approved";
       to_tenant_id: string;
       tenant_name: string;
+    }
+  | {
+      type: "profile_incomplete";
+      to_email: string;
+      tenant_name: string;
+      missing: string[];
+      action_link: string;
     }
   | {
       type: "invoice_sent";
@@ -169,6 +177,8 @@ function templateFor(event: EmailEvent): Template {
       return tplNewMessage(event);
     case "tenant_approved":
       return tplTenantApproved(event);
+    case "profile_incomplete":
+      return tplProfileIncomplete(event);
     case "invoice_sent":
       return tplInvoiceSent(event);
     case "invoice_paid":
