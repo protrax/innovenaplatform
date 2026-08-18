@@ -58,9 +58,19 @@ export async function finalizeSignupForUser(userId: string): Promise<{
   }
 
   // Build unique slug
+  //
+  // \u00e6 og \u00f8 har ingen dekomponert form i Unicode, s\u00e5 NFD alene lar dem st\u00e5 \u2014
+  // og s\u00e5 strippet tegnklassen dem til bindestrek. \u00abNETTL\u00d8FT GRAY\u00bb ble
+  // \u00abnettl-ft-gray\u00bb. Norske bokstaver m\u00e5 translittereres f\u00f8r normalisering.
   const slugify = (s: string) =>
     s
       .toLowerCase()
+      .replace(/\u00e6/g, "ae")
+      .replace(/\u00f8/g, "o")
+      .replace(/\u00e5/g, "a")
+      .replace(/\u00f6/g, "o")
+      .replace(/\u00e4/g, "a")
+      .replace(/\u00fc/g, "u")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
