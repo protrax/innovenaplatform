@@ -68,7 +68,7 @@ export default async function ByraaOversikt() {
           {pendingApproval
             ? "Venter på godkjenning — forbered kontoen i mellomtiden."
             : stats?.subscription_status !== "active"
-              ? "Aktiver abonnementet for å begynne å motta leads."
+              ? "Dere mottar leads gratis. Abonnement gir prioritet når flere matcher."
               : "Oversikt over leads, tilbud og omsetning."}
         </p>
       </div>
@@ -144,15 +144,17 @@ export default async function ByraaOversikt() {
         stats.subscription_status === null) ? (
         <Card className="border-brand/40 bg-gradient-to-br from-brand/5 to-transparent">
           <CardHeader>
-            <CardTitle className="text-base">🚀 Lås opp leads</CardTitle>
+            <CardTitle className="text-base">Vil dere ha prioritet?</CardTitle>
             <CardDescription>
-              Dere er godkjent. Start abonnement fra 2 990 kr/mnd så begynner
-              leads å tikke inn i pipelinen.
+              Dere er godkjent og mottar leads gratis. Når flere byråer matcher
+              samme forespørsel, går abonnentene først — Elite foran Pro Leads,
+              deretter gratisplassene. Har ingen abonnement i kategorien, går
+              forespørselen uansett til dere.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild variant="brand" size="sm">
-              <Link href="/byraa/abonnement">Start abonnement</Link>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/byraa/abonnement">Se abonnementene</Link>
             </Button>
           </CardContent>
         </Card>
@@ -278,9 +280,7 @@ export default async function ByraaOversikt() {
               <p className="mt-1 text-xs text-muted-foreground">
                 {pendingApproval
                   ? "Så snart dere er godkjent, får dere matchende forespørsler her."
-                  : stats?.subscription_status !== "active"
-                    ? "Aktiver abonnementet for å begynne å motta leads."
-                    : "Sjekk at dere har lagt til riktige kategorier under Innstillinger."}
+                  : "Sjekk at dere har lagt til riktige kategorier under Innstillinger — det er kategoriene som avgjør hva dere matches mot."}
               </p>
               {!pendingApproval ? (
                 <Button asChild variant="outline" size="sm" className="mt-3">

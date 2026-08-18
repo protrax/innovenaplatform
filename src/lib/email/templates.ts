@@ -213,7 +213,7 @@ export function tplTenantApproved(input: { tenant_name: string }): Template {
     <ul style="margin:0 0 16px;padding-left:20px;color:#404040;font-size:15px;line-height:1.7;">
       <li>Sjekk at tjenestekategoriene dere tilbyr er lagt til</li>
       <li>Legg inn konsulenter hvis aktuelt</li>
-      <li>Start abonnementet for å låse opp leads</li>
+      <li>Abonnement er valgfritt — det gir prioritet når flere byråer matcher samme forespørsel</li>
     </ul>
     ${button("Til dashbord", url)}
   `;
