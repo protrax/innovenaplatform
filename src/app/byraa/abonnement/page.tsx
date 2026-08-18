@@ -64,9 +64,16 @@ export default async function AbonnementPage({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Lead-abonnement</CardTitle>
+              {/*
+                Sto tidligere «(3–5 leads)» og «(10–15 leads)». Det er et
+                volumløfte vi ikke kontrollerer — antallet avhenger av
+                etterspørselen i kategorien, ikke av hva byrået betaler.
+                Abonnementet selger prioritet, og det er det som står her nå.
+              */}
               <CardDescription>
-                Pro Leads 2 990 kr/mnd (3–5 leads) · Elite 6 990 kr/mnd
-                (10–15 leads + topprioritet) · ingen bindingstid
+                Dere mottar forespørsler også uten abonnement. Abonnement gir
+                prioritet når flere byråer matcher den samme: Pro Leads 2 990
+                kr/mnd, Elite 6 990 kr/mnd med topprioritet. Ingen bindingstid.
               </CardDescription>
             </div>
             <Badge variant={active ? "brand" : "outline"}>

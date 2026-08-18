@@ -29,9 +29,49 @@ export default async function SignUpPage({
         Opprett kontoen din
       </h1>
       <p className="mt-2 text-sm text-[#6b6d68]">
-        Gratis for alltid. Ingen kortinfo, ingen bindingstid. Oppgrader når du
-        vil ha leads levert automatisk.
+        Gratis for alltid. Ingen kortinfo, ingen bindingstid.
       </p>
+
+      {/*
+        Et byrå påpekte offentlig at prisen ikke sto noe sted før man hadde
+        registrert seg. Den hører hjemme her, før du bruker tid på skjemaet —
+        og det viktigste er at gratisnivået faktisk mottar forespørsler.
+      */}
+      <div className="mt-6 border border-[#e5e5e0] bg-[#f4f4f0] p-4 text-sm">
+        <p className="font-semibold text-[#1a1c1a]">
+          Du mottar forespørsler gratis
+        </p>
+        <p className="mt-1 text-[#3f423e]">
+          Hver forespørsel går til inntil fem byråer i riktig fagområde.
+          Abonnement kjøper deg køplass når flere matcher den samme — det er
+          ikke adgangen.
+        </p>
+        <ul className="mt-3 space-y-1 text-[#3f423e]">
+          <li>
+            <span className="font-medium text-[#1a1c1a]">Gratis — 0 kr.</span>{" "}
+            Profil, pipeline, tilbud og prosjektstyring. Tar inntil to av de
+            fem plassene, og alle fem når ingen abonnent matcher.
+          </li>
+          <li>
+            <span className="font-medium text-[#1a1c1a]">
+              Pro Leads — 2 990 kr/mnd.
+            </span>{" "}
+            Prioritet foran gratisnivået, varsling i sanntid.
+          </li>
+          <li>
+            <span className="font-medium text-[#1a1c1a]">
+              Elite — 6 990 kr/mnd.
+            </span>{" "}
+            Topprioritet i deres kategorier, dedikert oppfølging.
+          </li>
+        </ul>
+        <p className="mt-3 text-xs text-[#6b6d68]">
+          I tillegg 2,5 % plattformgebyr på betalinger som går gjennom
+          plattformen. Det er hele prislisten. Ingen bindingstid — du kan falle
+          tilbake til gratis og beholde profil, verktøy og historikk.
+        </p>
+      </div>
+
       <div className="mt-8 space-y-6">
         <SignUpForm initialRole={rolle} categories={categories ?? []} />
         <p className="text-center text-sm text-[#6b6d68]">
