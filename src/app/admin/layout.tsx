@@ -45,6 +45,7 @@ export default async function AdminLayout({
           href: "/admin/dekning",
           icon: <Target className="h-4 w-4" />,
         },
+        { label: "Trakt", href: "/admin/trakt" },
         {
           label: "Abonnementer",
           href: "/admin/abonnementer",

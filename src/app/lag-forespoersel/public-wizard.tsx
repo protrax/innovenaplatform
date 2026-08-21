@@ -103,6 +103,48 @@ export function PublicWizard({
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+
+  /**
+   * Trakt-sporing. Plattformen hadde ingen maling: vi sa bare de som kom helt
+   * gjennom, og visste ikke hvor de andre falt av.
+   *
+   * Okt-id-en er tilfeldig og lever i sessionStorage — den folger ikke
+   * personen mellom besok og er ikke koblet til noe identifiserende.
+   */
+  const sessionIdRef = useRef<string>("");
+  const sporetRef = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      let id = sessionStorage.getItem("innovena-wizard-session");
+      if (!id) {
+        id = crypto.randomUUID();
+        sessionStorage.setItem("innovena-wizard-session", id);
+      }
+      sessionIdRef.current = id;
+    } catch {
+      /* privat modus e.l. — da maler vi ikke, og det er greit */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || !sessionIdRef.current) return;
+    if (sporetRef.current.has(state.step)) return;
+    sporetRef.current.add(state.step);
+    // Bevisst uten await: maling skal aldri forsinke eller velte flyten.
+    void fetch("/api/public/wizard/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId: sessionIdRef.current,
+        step: state.step,
+        source: searchParams.get("source"),
+        service: searchParams.get("service"),
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  }, [state.step, hydrated]);
   // Tracks whether we've already auto-advanced based on inbound query params
   // so we don't loop or fight the user if they hit Back from step 2.
   const inboundHandledRef = useRef(false);
