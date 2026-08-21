@@ -700,14 +700,26 @@ function Step2({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bekreft konteksten</CardTitle>
+        <CardTitle>Stemmer dette?</CardTitle>
         <CardDescription>
-          {state.enrichedFromUrl
-            ? "Sjekk at dette stemmer — juster det som ikke gjør det."
-            : "Beskriv kort virksomheten og hvem kundene er."}
+          Bekreft fagområdet, så er du nesten i mål.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        {/*
+          Brukeren skrev nettopp hva de trenger, og møtte deretter en skjerm
+          som ikke bekreftet at det ble registrert. Det er en tillitslekkasje
+          akkurat der forpliktelsen skal bygges — og den koster ingenting å
+          tette.
+        */}
+        {state.userInput?.trim() ? (
+          <div className="rounded-md border border-border bg-muted/40 px-4 py-3">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+              Du skrev
+            </div>
+            <p className="text-sm leading-relaxed">{state.userInput.trim()}</p>
+          </div>
+        ) : null}
         {state.enrichedFromUrl ? (
           <div className="flex items-center gap-2 rounded-md border border-brand/30 bg-brand/5 px-3 py-2 text-sm">
             <Sparkles className="h-4 w-4 text-brand" />
@@ -745,7 +757,22 @@ function Step2({
             })}
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        {/*
+          Alle seks feltene under er valgfrie. De sto apne og fikk steg 2 til
+          a se ut som et skjema pa seks felt, naar det egentlig bare handler
+          om a bekrefte fagomradet. Byraene far uansett omfang, budsjett og
+          tidsramme i steg 3 og 4.
+        */}
+        <details className="group rounded-md border border-border">
+          <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium hover:bg-muted/40">
+            <span className="group-open:hidden">
+              Legg til detaljer om virksomheten (valgfritt) →
+            </span>
+            <span className="hidden group-open:inline">
+              Detaljer om virksomheten — alt er valgfritt
+            </span>
+          </summary>
+          <div className="grid gap-4 sm:grid-cols-2 px-4 pb-4 pt-1">
           <div className="space-y-2">
             <Label htmlFor="ctxCompany">Selskap</Label>
             <Input
@@ -802,7 +829,8 @@ function Step2({
               placeholder="Tonalitet, nåværende teknisk setup, merkevarepreferanser…"
             />
           </div>
-        </div>
+          </div>
+        </details>
         <div className="flex items-center justify-between pt-2">
           <Button variant="ghost" onClick={onBack}>
             <ArrowLeft className="h-4 w-4" /> Tilbake
