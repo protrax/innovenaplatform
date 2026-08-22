@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import { SubscriptionActions } from "./subscription-actions";
+import { JuridiskeLenker } from "@/components/juridiske-lenker";
 
 export const dynamic = "force-dynamic";
 
@@ -97,6 +98,12 @@ export default async function AbonnementPage({
               stripeConfigured={stripeConfigured}
             />
           ) : null}
+          {/*
+            Abonnementene ble solgt uten at vilkarene fantes noe sted. Her star
+            blant annet at vi ikke lover et bestemt antall forespoersler — det
+            er nettopp det et byraa tok opp offentlig.
+          */}
+          <JuridiskeLenker prefiks="Abonnementet følger" />
           {!stripeConfigured ? (
             <p className="text-xs text-muted-foreground">
               Stripe er ikke konfigurert ennå. Admin må sette STRIPE_SECRET_KEY

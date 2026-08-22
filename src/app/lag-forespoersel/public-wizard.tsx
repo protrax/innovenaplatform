@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { RotatingLoader } from "@/components/ui/rotating-loader";
+import { JuridiskeLenker } from "@/components/juridiske-lenker";
 import {
   buildBusinessContext,
   defaultState,
@@ -1420,6 +1421,12 @@ function Step5({
               </button>
             </div>
           )}
+          {/*
+            Her deles navn, e-post og telefon med inntil fem leverandorer.
+            Da skal det sta hva som skjer med opplysningene, ikke bare hva
+            kunden far.
+          */}
+          <JuridiskeLenker prefiks="Når du publiserer, gjelder" />
           <div className="rounded-md border border-brand/40 bg-brand/5 p-3 text-sm">
             <p className="font-medium">Når du publiserer:</p>
             <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">

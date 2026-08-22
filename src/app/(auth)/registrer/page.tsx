@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SignUpForm } from "./sign-up-form";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { JuridiskeLenker } from "@/components/juridiske-lenker";
 
 type RoleChoice = "byraa" | "solo";
 
@@ -76,6 +77,14 @@ export default async function SignUpPage({
 
       <div className="mt-8 space-y-6">
         <SignUpForm initialRole={rolle} categories={categories ?? []} />
+        {/*
+          Sto ingen steder for. Vi opprettet kontoer og tok betalt uten at
+          verken vilkar eller personvernerklaering var tilgjengelig pa domenet.
+        */}
+        <JuridiskeLenker
+          className="text-center"
+          prefiks="Ved å opprette konto godtar dere"
+        />
         <p className="text-center text-sm text-[#6b6d68]">
           Har du konto?{" "}
           <Link
