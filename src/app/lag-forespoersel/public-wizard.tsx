@@ -361,6 +361,53 @@ export function PublicWizard({
     });
   }
 
+  /**
+   * Steg 2 er der leadet fanges.
+   *
+   * Fram til 7. august 2026 spurte skjemaet pa innovena.no om kontaktinfo
+   * forst og lagret leadet umiddelbart — 244 leads pa tretten maneder. Etter
+   * at det ble byttet ut med denne veiviseren, som forst spurte i steg 5,
+   * ble alt som falt av underveis borte.
+   *
+   * Vi spor her, rett etter at kunden har bekreftet fagomradet, og lagrer for
+   * de gar videre. Kommer de i mal, er raden bare historikk. Gjor de det
+   * ikke, har vi fortsatt noen a folge opp.
+   */
+  function forlatSteg2() {
+    const epost = state.customer_email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(epost)) {
+      setError("Skriv inn en gyldig e-post så vi vet hvor tilbudene skal");
+      return;
+    }
+    if (!state.customer_full_name.trim()) {
+      setError("Skriv inn navnet ditt");
+      return;
+    }
+    setError(null);
+
+    if (sessionIdRef.current) {
+      // Bevisst uten await: fangsten skal aldri forsinke neste steg.
+      void fetch("/api/public/wizard/capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: sessionIdRef.current,
+          email: epost,
+          fullName: state.customer_full_name,
+          phone: state.customer_phone,
+          userInput: state.userInput,
+          categorySlugs: state.selectedCategorySlugs,
+          source: searchParams.get("source"),
+          service: searchParams.get("service"),
+          step: 2,
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    }
+
+    goto(3);
+  }
+
   function submitStep3Goal() {
     if (!state.userGoal.trim()) {
       setError("Beskriv målet med prosjektet");
@@ -496,7 +543,7 @@ export function PublicWizard({
     setLoadingMessage("Sender forespørselen…");
     setError(null);
     try {
-      await postJson<{ ok: true; project_id: string }>(
+      const resultat = await postJson<{ ok: true; project_id: string }>(
         "/api/public/inquiries",
         {
           customer: {
@@ -514,6 +561,29 @@ export function PublicWizard({
           source: "platform_public_wizard",
         },
       );
+
+      // Merker fangsten som fullfort, slik at den ikke ligger igjen pa
+      // oppfolgingslista. Feiler den, er den verste konsekvensen at vi
+      // kontakter noen som allerede har sendt inn.
+      if (sessionIdRef.current) {
+        void fetch("/api/public/wizard/capture", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: sessionIdRef.current,
+            email: state.customer_email,
+            fullName: state.customer_full_name,
+            phone: state.customer_phone,
+            userInput: state.userInput,
+            categorySlugs: state.selectedCategorySlugs,
+            source: searchParams.get("source"),
+            service: searchParams.get("service"),
+            step: 5,
+            projectId: resultat.project_id,
+          }),
+          keepalive: true,
+        }).catch(() => {});
+      }
 
       try {
         localStorage.removeItem(PUBLIC_STORAGE_KEY);
@@ -571,7 +641,8 @@ export function PublicWizard({
           update={update}
           categories={categories}
           onBack={() => goto(1)}
-          onNext={() => goto(3)}
+          onNext={forlatSteg2}
+          error={error}
         />
       ) : null}
       {state.step === 3 ? (
@@ -722,6 +793,7 @@ function Step2({
   categories,
   onBack,
   onNext,
+  error,
 }: {
   state: PublicWizardState;
   update: <K extends keyof PublicWizardState>(
@@ -731,6 +803,7 @@ function Step2({
   categories: WizardCategory[];
   onBack: () => void;
   onNext: () => void;
+  error: string | null;
 }) {
   function toggleCategory(slug: string) {
     const set = new Set(state.selectedCategorySlugs);
@@ -798,6 +871,55 @@ function Step2({
               );
             })}
           </div>
+        </div>
+        {/*
+          Kontaktinfoen la tidligere i steg 5, rett for innsending. Da var alt
+          som falt av i steg 2-4 tapt — og det er der de fleste faller av.
+          Her har kunden nettopp bekreftet fagomradet, som er det punktet de er
+          mest forpliktet. Telefon er valgfritt; navn og e-post er alt vi
+          trenger for a folge opp.
+        */}
+        <div className="space-y-3 rounded-md border border-brand/40 bg-brand/5 p-4">
+          <div>
+            <div className="text-sm font-medium">Hvor sender vi tilbudene?</div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Du får en innloggingslenke på e-post — ingen passord å huske.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="step2-name">Navn</Label>
+              <Input
+                id="step2-name"
+                value={state.customer_full_name}
+                onChange={(e) => update("customer_full_name", e.target.value)}
+                placeholder="Ola Nordmann"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="step2-email">E-post</Label>
+              <Input
+                id="step2-email"
+                type="email"
+                value={state.customer_email}
+                onChange={(e) => update("customer_email", e.target.value)}
+                placeholder="ola@example.com"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="step2-phone">Telefon (valgfritt)</Label>
+              <Input
+                id="step2-phone"
+                type="tel"
+                value={state.customer_phone}
+                onChange={(e) => update("customer_phone", e.target.value)}
+                placeholder="+47 ..."
+              />
+            </div>
+          </div>
+          {error ? (
+            <p className="text-sm text-destructive">{error}</p>
+          ) : null}
         </div>
         {/*
           Alle seks feltene under er valgfrie. De sto apne og fikk steg 2 til
@@ -1213,6 +1335,11 @@ function Step5({
   loading: boolean;
   loadingMessage: string;
 }) {
+  // Feltene apnes bare hvis vi mangler noe, eller kunden selv velger a rette.
+  const [visKontaktfelt, setVisKontaktfelt] = useState(
+    !state.customer_email.trim() || !state.customer_full_name.trim(),
+  );
+
   // Kontaktfeltene og send-knappen ligger først. Briefen er allerede generert
   // og godkjent i steg 4 — legger vi den øverst her, møter kunden en vegg av
   // tekst rett før innsending og faller fra. Den er tilgjengelig for redigering
@@ -1231,42 +1358,68 @@ function Step5({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="cust-name">Navn</Label>
-              <Input
-                id="cust-name"
-                required
-                value={state.customer_full_name}
-                onChange={(e) => update("customer_full_name", e.target.value)}
-                placeholder="Ola Nordmann"
-              />
+          {/*
+            Kontaktinfoen ble gitt i steg 2. A be om den pa nytt her ser ut som
+            en feil og gir kunden en grunn til a stoppe opp. Vi viser den vi
+            har, med mulighet til a rette den.
+          */}
+          {visKontaktfelt ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="cust-name">Navn</Label>
+                <Input
+                  id="cust-name"
+                  required
+                  value={state.customer_full_name}
+                  onChange={(e) => update("customer_full_name", e.target.value)}
+                  placeholder="Ola Nordmann"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cust-email">E-post</Label>
+                <Input
+                  id="cust-email"
+                  type="email"
+                  required
+                  value={state.customer_email}
+                  onChange={(e) => update("customer_email", e.target.value)}
+                  placeholder="ola@example.com"
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="cust-phone">Telefon (valgfritt)</Label>
+                <Input
+                  id="cust-phone"
+                  type="tel"
+                  value={state.customer_phone}
+                  onChange={(e) => update("customer_phone", e.target.value)}
+                  placeholder="+47 ..."
+                />
+                <p className="text-xs text-muted-foreground">
+                  Deles kun med byråer som sender tilbud, om de trenger å ringe.
+                </p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="cust-email">E-post</Label>
-              <Input
-                id="cust-email"
-                type="email"
-                required
-                value={state.customer_email}
-                onChange={(e) => update("customer_email", e.target.value)}
-                placeholder="ola@example.com"
-              />
+          ) : (
+            <div className="flex items-start justify-between gap-4 rounded-md border border-border bg-muted/40 px-4 py-3">
+              <div className="min-w-0 text-sm">
+                <div className="font-medium truncate">
+                  {state.customer_full_name}
+                </div>
+                <div className="text-muted-foreground truncate">
+                  {state.customer_email}
+                  {state.customer_phone ? ` · ${state.customer_phone}` : ""}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setVisKontaktfelt(true)}
+                className="shrink-0 text-sm underline underline-offset-2 text-muted-foreground hover:text-foreground"
+              >
+                Endre
+              </button>
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="cust-phone">Telefon (valgfritt)</Label>
-              <Input
-                id="cust-phone"
-                type="tel"
-                value={state.customer_phone}
-                onChange={(e) => update("customer_phone", e.target.value)}
-                placeholder="+47 ..."
-              />
-              <p className="text-xs text-muted-foreground">
-                Deles kun med byråer som sender tilbud, om de trenger å ringe.
-              </p>
-            </div>
-          </div>
+          )}
           <div className="rounded-md border border-brand/40 bg-brand/5 p-3 text-sm">
             <p className="font-medium">Når du publiserer:</p>
             <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">

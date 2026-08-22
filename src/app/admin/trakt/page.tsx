@@ -35,16 +35,26 @@ export default async function TraktPage() {
   if (!user) return null;
 
   const admin = createAdminClient();
-  const [{ data: hendelser }, { count: prosjekter }] = await Promise.all([
+  const [{ data: hendelser }, { count: prosjekter }, { data: fangede }] =
+    await Promise.all([
     admin
       .from("wizard_events")
       .select("session_id, step, source, created_at")
       .order("created_at", { ascending: false })
       .limit(5000),
-    admin.from("projects").select("id", { count: "exact", head: true }),
-  ]);
+      admin.from("projects").select("id", { count: "exact", head: true }),
+      // De som ga fra seg kontaktinfo i steg 2 men aldri publiserte. Disse
+      // ville vart tapt for — de er hele grunnen til at fangsten ble flyttet.
+      admin
+        .from("lead_captures")
+        .select("email, full_name, phone, user_input, source, highest_step, created_at")
+        .is("project_id", null)
+        .order("created_at", { ascending: false })
+        .limit(100),
+    ]);
 
   const rader = hendelser ?? [];
+  const apne = fangede ?? [];
 
   // Hoyeste naadde steg per okt — det er det som gir trakten.
   const hoyeste = new Map<string, number>();
@@ -161,6 +171,70 @@ export default async function TraktPage() {
           </Card>
         </>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Ga fra seg kontaktinfo, men fullførte ikke ({apne.length})
+          </CardTitle>
+          <CardDescription>
+            Fanget i steg 2. Fram til 22. august ble disse borte — veiviseren
+            spurte om kontaktinfo først i steg 5, så alt som falt av underveis
+            forsvant. Dette er folk det går an å ringe.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {apne.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Ingen ennå. Første som fyller ut steg 2 uten å fullføre dukker opp
+              her.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {apne.map((l) => (
+                <div
+                  key={`${l.email}-${l.created_at}`}
+                  className="border-b border-border/60 pb-3 last:border-0 last:pb-0"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <span className="text-sm font-medium">
+                      {l.full_name || "(uten navn)"}
+                    </span>
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      kom til steg {l.highest_step} ·{" "}
+                      {new Date(l.created_at).toLocaleDateString("nb-NO")}
+                    </span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <a
+                      href={`mailto:${l.email}`}
+                      className="underline underline-offset-2"
+                    >
+                      {l.email}
+                    </a>
+                    {l.phone ? (
+                      <>
+                        {" · "}
+                        <a
+                          href={`tel:${l.phone}`}
+                          className="underline underline-offset-2"
+                        >
+                          {l.phone}
+                        </a>
+                      </>
+                    ) : null}
+                  </div>
+                  {l.user_input ? (
+                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                      {l.user_input}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
