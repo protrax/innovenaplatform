@@ -191,9 +191,13 @@ export function PublicWizard({
       ...prev,
       userInput: prev.userInput || qDescription,
       url: prev.url || qUrl,
-      customer_email: prev.customer_email || qEmail,
-      customer_phone: prev.customer_phone || qPhone,
-      ctxCompanyName: prev.ctxCompanyName || qCompany,
+      // Motsatt presedens av feltene over: her vinner det innkommende.
+      // Kunden skrev nettopp disse i skjemaet pa innovena.no, og lagret
+      // localStorage fra et tidligere besok skal ikke overstyre det de just
+      // tastet. Testet: uten dette fikk en gjenganger opp gammel e-post.
+      customer_email: qEmail || prev.customer_email,
+      customer_phone: qPhone || prev.customer_phone,
+      ctxCompanyName: qCompany || prev.ctxCompanyName,
       selectedCategorySlugs:
         prev.selectedCategorySlugs.length > 0
           ? prev.selectedCategorySlugs
