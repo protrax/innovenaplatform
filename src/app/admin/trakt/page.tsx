@@ -11,6 +11,7 @@ import {
 export const dynamic = "force-dynamic";
 
 const STEG_NAVN: Record<number, string> = {
+  0: "Åpnet skjemaet på innovena.no",
   1: "Beskriv behovet",
   2: "Bekreft fagområde",
   3: "Mål og omfang",
@@ -47,7 +48,7 @@ export default async function TraktPage() {
       // ville vart tapt for — de er hele grunnen til at fangsten ble flyttet.
       admin
         .from("lead_captures")
-        .select("email, full_name, phone, user_input, source, highest_step, created_at")
+        .select("email, full_name, company, phone, user_input, source, fanget_paa, created_at")
         .is("project_id", null)
         .order("created_at", { ascending: false })
         .limit(100),
@@ -110,20 +111,21 @@ export default async function TraktPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {[1, 2, 3, 4, 5].map((s) => {
+              {[0, 1, 2, 3, 4, 5].map((s) => {
                 const n = naaddeSteg(s);
                 const pst = Math.round((n / okter) * 100);
-                const forrige = s > 1 ? naaddeSteg(s - 1) : okter;
+                const forrige = s > 0 ? naaddeSteg(s - 1) : okter;
                 const tapt = forrige - n;
                 return (
                   <div key={s}>
                     <div className="flex items-baseline justify-between text-sm">
                       <span className="font-medium">
-                        {s}. {STEG_NAVN[s]}
+                        {s === 0 ? "" : `${s}. `}
+                        {STEG_NAVN[s]}
                       </span>
                       <span className="tabular-nums text-muted-foreground">
                         {n} ({pst} %)
-                        {s > 1 && tapt > 0 ? (
+                        {s > 0 && tapt > 0 ? (
                           <span className="ml-2 text-destructive">
                             −{tapt}
                           </span>
@@ -178,16 +180,17 @@ export default async function TraktPage() {
             Ga fra seg kontaktinfo, men fullførte ikke ({apne.length})
           </CardTitle>
           <CardDescription>
-            Fanget i steg 2. Fram til 22. august ble disse borte — veiviseren
-            spurte om kontaktinfo først i steg 5, så alt som falt av underveis
-            forsvant. Dette er folk det går an å ringe.
+            Fanget i skjemaet på innovena.no, før videresending. Fram til 23.
+            august ble disse borte — kontaktinfoen ble først etterspurt i
+            veiviseren, på et annet domene, og ingen kom så langt. Dette er
+            folk det går an å ringe.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {apne.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Ingen ennå. Første som fyller ut steg 2 uten å fullføre dukker opp
-              her.
+              Ingen ennå. Første som sender inn skjemaet uten å fullføre
+              veiviseren dukker opp her.
             </p>
           ) : (
             <div className="space-y-3">
@@ -198,10 +201,10 @@ export default async function TraktPage() {
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                     <span className="text-sm font-medium">
-                      {l.full_name || "(uten navn)"}
+                      {l.company || l.full_name || "(uten firmanavn)"}
                     </span>
                     <span className="text-xs tabular-nums text-muted-foreground">
-                      kom til steg {l.highest_step} ·{" "}
+                      {l.fanget_paa === "hero" ? "fra skjemaet" : "fra veiviseren"} ·{" "}
                       {new Date(l.created_at).toLocaleDateString("nb-NO")}
                     </span>
                   </div>

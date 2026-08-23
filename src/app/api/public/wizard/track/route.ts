@@ -38,7 +38,10 @@ export async function POST(request: Request) {
     const sessionId = String(body.sessionId ?? "").slice(0, 64);
     const step = Number(body.step);
 
-    if (!sessionId || !Number.isInteger(step) || step < 1 || step > 6) {
+    // Steg 0 er skjemaet pa innovena.no: kontaktfeltene ble apnet, men
+    // ikke nodvendigvis sendt inn. Det er toppen av trakten, og uten det
+    // vet vi ikke om de tre feltene koster oss noe.
+    if (!sessionId || !Number.isInteger(step) || step < 0 || step > 6) {
       return NextResponse.json({ ok: true }, { headers: cors() });
     }
 
