@@ -118,11 +118,15 @@ export function PublicWizard({
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      let id = sessionStorage.getItem("innovena-wizard-session");
+      // Kommer brukeren fra skjemaet pa innovena.no, har leadet allerede
+      // blitt fanget der med denne okt-id-en. Vi bruker den samme, slik at
+      // trakten og fangsten peker pa samme person.
+      const innkommende = new URLSearchParams(window.location.search).get("sid");
+      let id = innkommende || sessionStorage.getItem("innovena-wizard-session");
       if (!id) {
         id = crypto.randomUUID();
-        sessionStorage.setItem("innovena-wizard-session", id);
       }
+      sessionStorage.setItem("innovena-wizard-session", id);
       sessionIdRef.current = id;
     } catch {
       /* privat modus e.l. — da maler vi ikke, og det er greit */
@@ -172,8 +176,13 @@ export function PublicWizard({
     const qDescription = searchParams.get("description")?.trim() ?? "";
     const qUrl = searchParams.get("url")?.trim() ?? "";
     const qService = searchParams.get("service")?.trim() ?? "";
+    // Kontaktdata fanget i skjemaet pa innovena.no. Uten dette matte kunden
+    // oppgi det samme en gang til, og trakten viste at de da forsvinner.
+    const qEmail = searchParams.get("email")?.trim() ?? "";
+    const qPhone = searchParams.get("phone")?.trim() ?? "";
+    const qCompany = searchParams.get("company")?.trim() ?? "";
 
-    if (!qDescription && !qUrl && !qService) return;
+    if (!qDescription && !qUrl && !qService && !qEmail) return;
     inboundHandledRef.current = true;
 
     // Only hydrate fields the user hasn't already filled (respect anything
@@ -182,6 +191,9 @@ export function PublicWizard({
       ...prev,
       userInput: prev.userInput || qDescription,
       url: prev.url || qUrl,
+      customer_email: prev.customer_email || qEmail,
+      customer_phone: prev.customer_phone || qPhone,
+      ctxCompanyName: prev.ctxCompanyName || qCompany,
       selectedCategorySlugs:
         prev.selectedCategorySlugs.length > 0
           ? prev.selectedCategorySlugs

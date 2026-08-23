@@ -53,6 +53,11 @@ export async function POST(request: Request) {
         full_name: tekst(body.fullName, 200),
         phone: tekst(body.phone, 40),
         user_input: tekst(body.userInput, 4000),
+        company: tekst(body.company, 200),
+        // «hero» = fanget i skjemaet pa innovena.no, for videresending.
+        // «veiviser» = fanget i steg 2 her. Skillet forteller hvilken av de
+        // to fangstpunktene som faktisk virker.
+        fanget_paa: tekst(body.fangetPaa, 20) ?? 'veiviser',
         source: tekst(body.source, 80),
         service: tekst(body.service, 80),
         category_slugs: Array.isArray(body.categorySlugs)
