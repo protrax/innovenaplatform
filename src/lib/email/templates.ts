@@ -581,3 +581,85 @@ export function tplProfileIncomplete(input: {
     text: `Vi mangler litt info om ${input.tenant_name} før vi kan godkjenne dere:\n\n${input.missing.map((m) => `- ${m}`).join("\n")}\n\nFullfør her: ${input.action_link}`,
   };
 }
+
+// =============================================================================
+// Internt: noen ga fra seg kontaktinfo, men fullforte ikke
+// =============================================================================
+export function tplLeadFanget(input: {
+  kunde_navn: string | null;
+  kunde_epost: string;
+  kunde_telefon: string | null;
+  selskap: string | null;
+  beskrivelse: string | null;
+  kilde: string | null;
+  steg: number;
+}): Template {
+  const navn = input.selskap || input.kunde_navn || input.kunde_epost;
+  const rad = (etikett: string, verdi: string) => `
+      <tr>
+        <td style="padding:8px 12px;font-size:14px;color:#525252;border-top:1px solid #e5e5e5;">${etikett}</td>
+        <td style="padding:8px 12px;font-size:14px;text-align:right;border-top:1px solid #e5e5e5;">${verdi}</td>
+      </tr>`;
+  const content = `
+    <h1 style="margin:0 0 8px;font-size:20px;">${navn} ba om tilbud</h1>
+    <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
+      Kontaktinfoen er fanget, men forespørselen er ikke publisert ennå — de
+      kom til steg ${input.steg} av 5. Ring før de rekker å spørre noen andre.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:12px 0;width:100%;background:#fafafa;border-radius:6px;">
+      ${rad("E-post", `<a href="mailto:${input.kunde_epost}">${input.kunde_epost}</a>`)}
+      ${input.kunde_telefon ? rad("Telefon", `<a href="tel:${input.kunde_telefon}">${input.kunde_telefon}</a>`) : ""}
+      ${input.kunde_navn ? rad("Navn", input.kunde_navn) : ""}
+      ${input.kilde ? rad("Kom fra", input.kilde) : ""}
+    </table>
+    ${
+      input.beskrivelse
+        ? `<div style="background:#fafafa;border-radius:6px;padding:16px;margin:12px 0;font-size:14px;line-height:1.5;color:#404040;white-space:pre-wrap;">${input.beskrivelse}</div>`
+        : ""
+    }
+    ${button("Se alle åpne fangster", `${baseUrl()}/admin/trakt`)}
+  `;
+  return {
+    subject: `Ny forespørsel påbegynt: ${navn}`,
+    html: shell(content, `Steg ${input.steg} av 5 · ${input.kunde_epost}`),
+    text: `${navn} ba om tilbud, men fullførte ikke (steg ${input.steg} av 5).\n\nE-post: ${input.kunde_epost}\n${input.kunde_telefon ? `Telefon: ${input.kunde_telefon}\n` : ""}${input.kilde ? `Kom fra: ${input.kilde}\n` : ""}\n${input.beskrivelse ?? ""}\n\n${baseUrl()}/admin/trakt`,
+  };
+}
+
+// =============================================================================
+// Til kunden: du begynte pa en forespoersel — fullfor den
+// =============================================================================
+export function tplFullforPaaminnelse(input: {
+  kunde_navn: string | null;
+  beskrivelse: string | null;
+  fortsett_lenke: string;
+}): Template {
+  const hilsen = input.kunde_navn ? `Hei ${input.kunde_navn.split(" ")[0]},` : "Hei,";
+  const content = `
+    <h1 style="margin:0 0 8px;font-size:20px;">Du er nesten i mål</h1>
+    <p style="margin:0 0 16px;color:#404040;font-size:15px;line-height:1.5;">
+      ${hilsen} du begynte på en forespørsel hos Innovena, men kom ikke helt
+      i havn. Alt du allerede har skrevet er tatt vare på — trykk på knappen,
+      så fortsetter du der du slapp.
+    </p>
+    ${
+      input.beskrivelse
+        ? `<div style="background:#fafafa;border-radius:6px;padding:16px;margin:12px 0;font-size:14px;line-height:1.5;color:#404040;white-space:pre-wrap;">${input.beskrivelse}</div>`
+        : ""
+    }
+    ${button("Fortsett forespørselen", input.fortsett_lenke)}
+    <p style="margin:16px 0 0;color:#404040;font-size:15px;line-height:1.5;">
+      Det tar et par minutter, og du får tilbud fra inntil fem leverandører
+      innen 24 timer. Tjenesten er gratis og uforpliktende.
+    </p>
+    <p style="margin:16px 0 0;color:#737373;font-size:13px;line-height:1.5;">
+      Passer det ikke likevel, er det bare å se bort fra denne — du hører
+      ikke mer fra oss om den. Svarer du på e-posten, kommer du rett til oss.
+    </p>
+  `;
+  return {
+    subject: "Du er nesten i mål — fortsett forespørselen",
+    html: shell(content, "Alt du skrev er tatt vare på"),
+    text: `${hilsen}\n\nDu begynte på en forespørsel hos Innovena, men kom ikke helt i havn. Alt du skrev er tatt vare på.\n\nFortsett her: ${input.fortsett_lenke}\n\nDu får tilbud fra inntil fem leverandører innen 24 timer. Gratis og uforpliktende.\n\nPasser det ikke, er det bare å se bort fra denne.`,
+  };
+}

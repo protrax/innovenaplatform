@@ -22,6 +22,9 @@ const serverSchema = z.object({
   // Where new-tenant-signup notifications go (admin inbox)
   ADMIN_EMAIL: optional,
   ANTHROPIC_API_KEY: optional,
+  // Vercel signerer kojobbene sine med denne. Uten den kan hvem som helst
+  // utlose utsending ved a treffe /api/cron/*.
+  CRON_SECRET: optional,
 });
 
 const clientSchema = z.object({
@@ -44,6 +47,7 @@ export const serverEnv = serverSchema.parse({
   RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+  CRON_SECRET: process.env.CRON_SECRET,
 });
 
 export const clientEnv = clientSchema.parse({

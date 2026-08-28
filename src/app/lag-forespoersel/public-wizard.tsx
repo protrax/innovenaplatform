@@ -451,14 +451,18 @@ export function PublicWizard({
   }
 
   function enterStep4() {
-    if (!state.userGoal.trim()) {
-      setError("Beskriv målet før du går videre");
-      return;
-    }
+    /*
+      Malet er valgfritt.
+
+      Steg 1 spor «hva trenger du», steg 3 spurte «hva er malet» — for de
+      fleste er det samme svar med andre ord, og det sto som en sperre midt
+      i trakten. Skriver de ingenting, bruker vi det de allerede har sagt.
+    */
+    const maal = state.userGoal.trim() || state.userInput.trim();
     const deliverables = [...state.selectedDeliverables];
     if (state.extraDeliverable.trim()) deliverables.push(state.extraDeliverable);
-    if (deliverables.length === 0) {
-      deliverables.push(state.userGoal);
+    if (deliverables.length === 0 && maal) {
+      deliverables.push(maal);
     }
     if (!aiEnabled) {
       goto(4);
@@ -1079,7 +1083,12 @@ function Step3({
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="userGoal">Hva er hovedmålet med prosjektet?</Label>
+          <Label htmlFor="userGoal">
+            Hva er hovedmålet med prosjektet?{" "}
+            <span className="font-normal text-muted-foreground">
+              (valgfritt)
+            </span>
+          </Label>
           <Textarea
             id="userGoal"
             rows={3}
@@ -1163,7 +1172,7 @@ function Step3({
             variant="brand"
             size="lg"
             onClick={onNext}
-            disabled={loading || !state.userGoal.trim()}
+            disabled={loading}
           >
             {loading ? (
               <>

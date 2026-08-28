@@ -22,6 +22,8 @@ import {
   tplTenantRejected,
   tplTenantSuspended,
   type Template,
+  tplLeadFanget,
+  tplFullforPaaminnelse,
 } from "./templates";
 
 // Discriminated union for all email events. Each one carries enough info to
@@ -161,10 +163,35 @@ export type EmailEvent =
       contact_name: string;
       source: string;
       contact_id: string;
+    }
+  // Internt varsel: noen ga fra seg kontaktinfo uten a fullfore. Uten dette
+  // la fangstene usett i /admin/trakt til noen tilfeldigvis apnet sida.
+  | {
+      type: "lead_fanget";
+      to_email: string;
+      kunde_navn: string | null;
+      kunde_epost: string;
+      kunde_telefon: string | null;
+      selskap: string | null;
+      beskrivelse: string | null;
+      kilde: string | null;
+      steg: number;
+    }
+  // Til kunden: fortsett der du slapp. Sendes en gang, aldri mer.
+  | {
+      type: "fullfor_paaminnelse";
+      to_email: string;
+      kunde_navn: string | null;
+      beskrivelse: string | null;
+      fortsett_lenke: string;
     };
 
 function templateFor(event: EmailEvent): Template {
   switch (event.type) {
+    case "lead_fanget":
+      return tplLeadFanget(event);
+    case "fullfor_paaminnelse":
+      return tplFullforPaaminnelse(event);
     case "new_bid":
       return tplNewBid(event);
     case "new_lead":

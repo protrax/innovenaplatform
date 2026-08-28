@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { queueEmail } from "@/lib/email/send";
+import { serverEnv } from "@/lib/env";
 
 export const runtime = "nodejs";
 
@@ -71,6 +73,45 @@ export async function POST(request: Request) {
       },
       { onConflict: "session_id" },
     );
+
+    /*
+      Varsle med en gang.
+
+      Fangsten fungerte, men ingen fikk vite om den: raden la i /admin/trakt
+      til noen tilfeldigvis apnet sida. Forste ekte fangst ble oppdaget tre
+      dager for sent. Et lead som skal ringes, er ferskvare.
+
+      Sendes en gang per okt (varsel_sendt_at), og aldri for en som allerede
+      har publisert forespoerselen — de far den vanlige prosjektvarslingen.
+
+      Hentes som et eget kall, ikke som .select() pa upserten over. Kolonnene
+      varsel_sendt_at og paaminnelse_sendt_at kommer av en migrasjon: kjores
+      koden for migrasjonen, skal fangsten fortsatt lagres — det er den som
+      er verdifull. Da feiler bare dette oppslaget, og varselet uteblir.
+    */
+    const { data: rad } = await admin
+      .from("lead_captures")
+      .select("id, project_id, varsel_sendt_at, full_name, phone, company, user_input, source, highest_step")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+
+    if (rad && !rad.project_id && !rad.varsel_sendt_at && serverEnv.ADMIN_EMAIL) {
+      queueEmail({
+        type: "lead_fanget",
+        to_email: serverEnv.ADMIN_EMAIL,
+        kunde_navn: rad.full_name ?? null,
+        kunde_epost: email,
+        kunde_telefon: rad.phone ?? null,
+        selskap: rad.company ?? null,
+        beskrivelse: rad.user_input ?? null,
+        kilde: rad.source ?? null,
+        steg: rad.highest_step ?? 2,
+      });
+      await admin
+        .from("lead_captures")
+        .update({ varsel_sendt_at: new Date().toISOString() })
+        .eq("id", rad.id);
+    }
 
     return NextResponse.json({ ok: true }, { headers: cors() });
   } catch {
