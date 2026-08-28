@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email/send";
+import { queueEmail } from "@/lib/email/send";
 import { serverEnv } from "@/lib/env";
 
 // Shared tenant-provisioning logic. Idempotent — safe to call multiple times.
@@ -160,9 +160,16 @@ export async function finalizeSignupForUser(userId: string): Promise<{
     });
   }
 
-  // Notify admin that a new tenant is pending review.
+  /*
+    Varsle admin om at et nytt byraa venter pa godkjenning.
+
+    Sto som `void sendEmail(...)` — samme fire-and-forget-felle som rammet de
+    fire andre stedene 9. august: Vercel kan suspendere instansen nar ruta
+    returnerer, og e-posten forsvinner uten spor i loggen. queueEmail holder
+    funksjonen i live til sendingen faktisk er fullfort.
+  */
   if (serverEnv.ADMIN_EMAIL && user.email) {
-    void sendEmail({
+    queueEmail({
       type: "new_tenant_pending",
       to_email: serverEnv.ADMIN_EMAIL,
       tenant_name: tenant.name,

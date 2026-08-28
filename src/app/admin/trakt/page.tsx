@@ -28,6 +28,57 @@ const STEG_NAVN: Record<number, string> = {
  *
  * Tallene starter pa null 22. august 2026. Alt for det er ikke malt.
  */
+
+/** Feltene kortet viser. Alt vi vet om en som ikke kom i mal. */
+interface Fangst {
+  email: string;
+  full_name: string | null;
+  company: string | null;
+  phone: string | null;
+  user_input: string | null;
+  source: string | null;
+  service: string | null;
+  category_slugs: string[] | null;
+  highest_step: number | null;
+  fanget_paa: string | null;
+  session_id: string | null;
+  created_at: string;
+  varsel_sendt_at?: string | null;
+  paaminnelse_sendt_at?: string | null;
+}
+
+/**
+ * Henter apne fangster.
+ *
+ * varsel_sendt_at og paaminnelse_sendt_at kommer av migrasjon 17. Kjores
+ * koden for migrasjonen, feiler sporringen pa ukjente kolonner — og da skal
+ * sida fortsatt vise leadene, som er det viktige. Derfor et forsok til uten
+ * de to feltene.
+ */
+async function hentApneFangster(): Promise<{ data: Fangst[] | null }> {
+  const admin = createAdminClient();
+  const felter =
+    "email, full_name, company, phone, user_input, source, service, category_slugs, highest_step, fanget_paa, session_id, created_at";
+
+  const forsok = await admin
+    .from("lead_captures")
+    .select(`${felter}, varsel_sendt_at, paaminnelse_sendt_at`)
+    .is("project_id", null)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (!forsok.error) return { data: forsok.data as unknown as Fangst[] };
+
+  const utenNye = await admin
+    .from("lead_captures")
+    .select(felter)
+    .is("project_id", null)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  return { data: (utenNye.data ?? null) as unknown as Fangst[] | null };
+}
+
 export default async function TraktPage() {
   const supabase = await createClient();
   const {
@@ -46,12 +97,7 @@ export default async function TraktPage() {
       admin.from("projects").select("id", { count: "exact", head: true }),
       // De som ga fra seg kontaktinfo i steg 2 men aldri publiserte. Disse
       // ville vart tapt for — de er hele grunnen til at fangsten ble flyttet.
-      admin
-        .from("lead_captures")
-        .select("email, full_name, company, phone, user_input, source, fanget_paa, created_at")
-        .is("project_id", null)
-        .order("created_at", { ascending: false })
-        .limit(100),
+      hentApneFangster(),
     ]);
 
   const rader = hendelser ?? [];
@@ -193,22 +239,29 @@ export default async function TraktPage() {
               veiviseren dukker opp her.
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {apne.map((l) => (
                 <div
-                  key={`${l.email}-${l.created_at}`}
-                  className="border-b border-border/60 pb-3 last:border-0 last:pb-0"
+                  key={l.session_id ?? `${l.email}-${l.created_at}`}
+                  className="rounded-md border border-border/70 p-4"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <span className="text-sm font-medium">
-                      {l.company || l.full_name || "(uten firmanavn)"}
+                    <span className="text-sm font-semibold">
+                      {l.company || l.full_name || l.email}
                     </span>
                     <span className="text-xs tabular-nums text-muted-foreground">
-                      {l.fanget_paa === "hero" ? "fra skjemaet" : "fra veiviseren"} ·{" "}
-                      {new Date(l.created_at).toLocaleDateString("nb-NO")}
+                      {new Date(l.created_at).toLocaleString("nb-NO", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
-                  <div className="text-sm text-muted-foreground">
+
+                  {/* Kontakt — det du trenger for a ta telefonen */}
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                     <a
                       href={`mailto:${l.email}`}
                       className="underline underline-offset-2"
@@ -216,22 +269,66 @@ export default async function TraktPage() {
                       {l.email}
                     </a>
                     {l.phone ? (
-                      <>
-                        {" · "}
-                        <a
-                          href={`tel:${l.phone}`}
-                          className="underline underline-offset-2"
-                        >
-                          {l.phone}
-                        </a>
-                      </>
+                      <a
+                        href={`tel:${l.phone}`}
+                        className="underline underline-offset-2"
+                      >
+                        {l.phone}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        ingen telefon oppgitt
+                      </span>
+                    )}
+                    {l.full_name && l.company ? (
+                      <span className="text-muted-foreground">
+                        Kontakt: {l.full_name}
+                      </span>
                     ) : null}
                   </div>
+
+                  {/* Hele teksten, ikke to linjer. Den er ofte det mest
+                      verdifulle vi har — den sier hva de faktisk vil ha. */}
                   {l.user_input ? (
-                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                    <p className="mt-3 whitespace-pre-wrap rounded bg-muted/50 p-3 text-sm text-foreground/90">
                       {l.user_input}
                     </p>
-                  ) : null}
+                  ) : (
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      Rakk ikke å beskrive behovet.
+                    </p>
+                  )}
+
+                  {/* Kontekst: hvor de kom fra, hvor langt de kom, hva vi har
+                      gjort med dem */}
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <Merke>
+                      Kom til steg {l.highest_step ?? 2} av 5
+                    </Merke>
+                    <Merke>
+                      {l.fanget_paa === "hero"
+                        ? "Fanget i skjemaet på innovena.no"
+                        : "Fanget i veiviseren"}
+                    </Merke>
+                    {l.source ? <Merke>Fra {l.source}</Merke> : null}
+                    {l.service ? <Merke>Tjeneste: {l.service}</Merke> : null}
+                    {(l.category_slugs ?? []).map((k) => (
+                      <Merke key={k}>{k}</Merke>
+                    ))}
+                    {l.varsel_sendt_at ? (
+                      <Merke tone="ok">Varslet deg</Merke>
+                    ) : null}
+                    {l.paaminnelse_sendt_at ? (
+                      <Merke tone="ok">
+                        Påminnelse sendt{" "}
+                        {new Date(l.paaminnelse_sendt_at).toLocaleDateString(
+                          "nb-NO",
+                        )}
+                      </Merke>
+                    ) : (
+                      <Merke tone="vent">Påminnelse ikke sendt ennå</Merke>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -239,5 +336,24 @@ export default async function TraktPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/** Liten etikett for konteksten rundt en fangst. */
+function Merke({
+  children,
+  tone = "noytral",
+}: {
+  children: React.ReactNode;
+  tone?: "noytral" | "ok" | "vent";
+}) {
+  const farge =
+    tone === "ok"
+      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+      : tone === "vent"
+        ? "bg-amber-50 text-amber-700 border-amber-200"
+        : "bg-muted text-muted-foreground border-transparent";
+  return (
+    <span className={`rounded border px-2 py-0.5 ${farge}`}>{children}</span>
   );
 }
