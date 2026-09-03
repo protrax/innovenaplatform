@@ -92,7 +92,32 @@ async function hentApneFangster(): Promise<{ data: Fangst[] | null }> {
   return { data: (utenNye.data ?? null) as unknown as Fangst[] | null };
 }
 
-export default async function TraktPage() {
+/*
+  Perioder. Trakten summerte alt fra 22. august og framover, for alltid.
+
+  Det gjorde tallet uleselig: 44 av 54 okter kom fra en knapp som ble rettet
+  26. august, og de blir liggende i nevneren for evig. Uansett hvor bra flyten
+  blir, viser totalen «2 % fullforte». Med en periode kan man se hva som
+  skjer NA, i stedet for gjennomsnittet av for og etter hver fiks.
+*/
+const PERIODER = [
+  { nokkel: '7', navn: 'Siste 7 dager', dager: 7 },
+  { nokkel: '14', navn: 'Siste 14 dager', dager: 14 },
+  { nokkel: '30', navn: 'Siste 30 dager', dager: 30 },
+  { nokkel: 'alt', navn: 'Alt siden 22. aug', dager: null as number | null },
+] as const;
+
+export default async function TraktPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ periode?: string }>;
+}) {
+  const { periode: valgt } = await searchParams;
+  const periode = PERIODER.find((p) => p.nokkel === valgt) ?? PERIODER[1];
+  const fra = periode.dager
+    ? new Date(Date.now() - periode.dager * 86400000).toISOString()
+    : null;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -100,13 +125,16 @@ export default async function TraktPage() {
   if (!user) return null;
 
   const admin = createAdminClient();
+  const hendelseSporring = admin
+    .from("wizard_events")
+    .select("session_id, step, source, created_at")
+    .order("created_at", { ascending: false })
+    .limit(5000);
+  if (fra) hendelseSporring.gte("created_at", fra);
+
   const [{ data: hendelser }, { count: prosjekter }, { data: fangede }] =
     await Promise.all([
-    admin
-      .from("wizard_events")
-      .select("session_id, step, source, created_at")
-      .order("created_at", { ascending: false })
-      .limit(5000),
+    hendelseSporring,
       admin.from("projects").select("id", { count: "exact", head: true }),
       // De som ga fra seg kontaktinfo i steg 2 men aldri publiserte. Disse
       // ville vart tapt for — de er hele grunnen til at fangsten ble flyttet.
@@ -149,6 +177,21 @@ export default async function TraktPage() {
           en sidevisning, ikke en handling: den ekte konverteringen er fra
           steg 2 og nedover.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          {PERIODER.map((p) => (
+            <a
+              key={p.nokkel}
+              href={`/admin/trakt?periode=${p.nokkel}`}
+              className={
+                p.nokkel === periode.nokkel
+                  ? "rounded border border-foreground/20 bg-muted px-3 py-1 font-medium"
+                  : "rounded border border-transparent px-3 py-1 text-muted-foreground hover:bg-muted/60"
+              }
+            >
+              {p.navn}
+            </a>
+          ))}
+        </div>
       </div>
 
       {okter === 0 ? (
