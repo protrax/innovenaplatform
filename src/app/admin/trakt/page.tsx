@@ -10,10 +10,23 @@ import {
 
 export const dynamic = "force-dynamic";
 
+/*
+  Steg 1 het «Beskriv behovet», og det var feil.
+
+  Veiviseren starter i state.step = 1, og sporingen fyrer i det komponenten
+  monteres. Steg 1 teller derfor hver eneste SIDEVISNING av veiviseren —
+  ogsa den som lukker fanen etter to sekunder, og hver robot som kjorer
+  JavaScript. Det fikk trakten til a vise «54 okter, 1 fullforte = 2 %», som
+  leses som en katastrofe.
+
+  Det ekte startsignalet er steg 2: dit kommer man forst nar beskrivelsen er
+  sendt inn, enten manuelt eller ved auto-fremrykk fra innovena.no. Navnene
+  under sier na hva tallene faktisk maler.
+*/
 const STEG_NAVN: Record<number, string> = {
   0: "Åpnet skjemaet på innovena.no",
-  1: "Beskriv behovet",
-  2: "Bekreft fagområde",
+  1: "Åpnet veiviseren (sidevisning)",
+  2: "Beskrev behovet og gikk videre",
   3: "Mål og omfang",
   4: "Budsjett og tid",
   5: "Kontakt og innsending",
@@ -132,7 +145,9 @@ export default async function TraktPage() {
         <h2 className="text-2xl font-semibold">Trakt</h2>
         <p className="text-sm text-muted-foreground">
           Hvor mange starter en forespørsel, og hvor faller de av. Målingen
-          startet 22. august 2026 — alt før det er ikke registrert.
+          startet 22. august 2026 — alt før det er ikke registrert. Steg 1 er
+          en sidevisning, ikke en handling: den ekte konverteringen er fra
+          steg 2 og nedover.
         </p>
       </div>
 
