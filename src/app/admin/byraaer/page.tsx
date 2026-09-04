@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { TenantStatusActions } from "./tenant-status-actions";
 import { formatDate } from "@/lib/utils";
+import { landFor, registerLenke } from "@/lib/foretaksregister";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +22,15 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 /** Ni siffer, eventuelt med mellomrom — samme format Brønnøysund bruker. */
+/*
+  Godtok tidligere bare ni siffer, altsa norske organisasjonsnummer, og lenket
+  alltid til Bronnoysund. Na registreres ogsa svenske foretak (ti siffer), og
+  da gikk oppslagslenka til en side som ikke finnes.
+*/
 function orgNumberDigits(org: string | null): string | null {
   if (!org) return null;
   const digits = org.replace(/\D/g, "");
-  return digits.length === 9 ? digits : null;
+  return landFor(digits) ? digits : null;
 }
 
 function Field({
@@ -165,12 +171,13 @@ export default async function AdminByraaerPage() {
                     <Field label="Organisasjonsnummer" missing={!orgDigits}>
                       {orgDigits ? (
                         <a
-                          href={`https://virksomhet.brreg.no/nb/oppslag/enheter/${orgDigits}`}
+                          href={registerLenke(orgDigits) ?? "#"}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="underline underline-offset-2"
                         >
-                          {t.org_number} — slå opp i Brønnøysund ↗
+                          {t.org_number} — slå opp i{" "}
+                          {landFor(orgDigits) === "SE" ? "Allabolag" : "Brønnøysund"} ↗
                         </a>
                       ) : (
                         "Ikke oppgitt — be om det før godkjenning"

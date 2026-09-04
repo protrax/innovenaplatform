@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check, Loader2, Search } from "lucide-react";
+import { LAND, type LandKode } from "@/lib/foretaksregister";
 
 export type OrgHit = {
   orgnr: string;
+  land: LandKode;
   name: string;
   formLabel: string | null;
   industry: string | null;
@@ -19,9 +21,14 @@ export type OrgHit = {
  * Organisasjonsnummer med oppslag mot Enhetsregisteret.
  *
  * Erstatter et fritt «firmanavn»-felt som ga oss registreringer med navnet
- * «TBD» og «Har ikke for tiden». Her kommer navnet fra Brønnøysund, ikke fra
+ * «TBD» og «Har ikke for tiden». Her kommer navnet fra registeret, ikke fra
  * brukeren — og konkurs/avvikling stoppes før de kommer inn i katalogen.
- * Det er samtidig mindre å skrive: ni siffer i stedet for fire felter.
+ * Det er samtidig mindre å skrive: et tall i stedet for fire felter.
+ *
+ * Feltet krevde tidligere ni siffer, altså et norsk organisasjonsnummer. Det
+ * stengte ute nordiske byråer som jobber mot det norske markedet. Nå velger
+ * man land først: Norge slås opp i Enhetsregisteret, Sverige i EUs
+ * momsregister.
  */
 export function OrgLookupField({
   value,
@@ -32,16 +39,20 @@ export function OrgLookupField({
   onResolved: (hit: OrgHit) => void;
   onCleared: () => void;
 }) {
+  const [land, setLand] = useState<LandKode>("NO");
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const konfig = LAND[land];
+  const klart = input.replace(/\D/g, "").length === konfig.siffer;
 
   async function lookup() {
     setBusy(true);
     setError(null);
     try {
       const res = await fetch(
-        `/api/public/org-lookup?orgnr=${encodeURIComponent(input)}`,
+        `/api/public/org-lookup?orgnr=${encodeURIComponent(input)}&land=${land}`,
       );
       const body = await res.json();
       if (!res.ok) {
@@ -50,7 +61,7 @@ export function OrgLookupField({
       }
       onResolved(body as OrgHit);
     } catch {
-      setError("Kunne ikke nå Enhetsregisteret. Prøv igjen om litt.");
+      setError(`Kunne ikke nå ${konfig.register}. Prøv igjen om litt.`);
     } finally {
       setBusy(false);
     }
@@ -69,6 +80,7 @@ export function OrgLookupField({
                 Org.nr {value.orgnr}
                 {value.formLabel ? ` · ${value.formLabel}` : ""}
                 {value.location ? ` · ${value.location}` : ""}
+                {value.land !== "NO" ? ` · ${LAND[value.land].navn}` : ""}
               </div>
               {value.industry ? (
                 <div className="text-xs text-muted-foreground">
@@ -96,10 +108,26 @@ export function OrgLookupField({
     <div className="space-y-2">
       <Label htmlFor="orgnr">Organisasjonsnummer</Label>
       <div className="flex gap-2">
+        <select
+          aria-label="Land"
+          value={land}
+          onChange={(e) => {
+            setLand(e.target.value as LandKode);
+            setInput("");
+            setError(null);
+          }}
+          className="h-9 shrink-0 rounded-md border border-input bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          {Object.values(LAND).map((l) => (
+            <option key={l.kode} value={l.kode}>
+              {l.navn}
+            </option>
+          ))}
+        </select>
         <Input
           id="orgnr"
           inputMode="numeric"
-          placeholder="9 siffer"
+          placeholder={konfig.plassholder}
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
@@ -108,7 +136,7 @@ export function OrgLookupField({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              if (input.replace(/\D/g, "").length === 9) lookup();
+              if (klart) lookup();
             }
           }}
         />
@@ -116,7 +144,7 @@ export function OrgLookupField({
           type="button"
           variant="outline"
           onClick={lookup}
-          disabled={busy || input.replace(/\D/g, "").length !== 9}
+          disabled={busy || !klart}
         >
           {busy ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -130,7 +158,7 @@ export function OrgLookupField({
         <p className="text-sm text-destructive">{error}</p>
       ) : (
         <p className="text-xs text-muted-foreground">
-          Vi henter foretaksnavnet fra Enhetsregisteret, så du slipper å fylle
+          Vi henter foretaksnavnet fra {konfig.register}, så du slipper å fylle
           ut selskapsinfo selv.
         </p>
       )}
